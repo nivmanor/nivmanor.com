@@ -407,7 +407,7 @@
     text-transform: uppercase;
     line-height: 1.1;
     color: var(--black);
-    margin-bottom: 0.2rem;
+    margin-bottom: 0;
   }
 
   body.rtl .prod-title-in-col {
@@ -459,14 +459,17 @@
     font-style: italic;
     color: var(--gray);
     letter-spacing: 0.02em;
-    margin-top: 0.2rem;
+    margin-top: 0;
   }
+
+  .prod-venue-name {
     font-family: var(--font-sans);
     font-size: 0.78rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--black);
     font-weight: 600;
+    margin-top: 0.4rem;
   }
 
   .prod-year-line {
@@ -474,7 +477,7 @@
     font-size: 0.78rem;
     letter-spacing: 0.08em;
     color: var(--black);
-    margin-bottom: 0.8rem;
+    margin-top: 0;
   }
 
   .prod-director-line {
@@ -483,8 +486,7 @@
     letter-spacing: 0.15em;
     color: var(--gray);
     text-transform: uppercase;
-    margin-top: 0.8rem;
-    margin-bottom: 0.2rem;
+    margin-top: 0.3rem;
     display: block;
   }
 
@@ -494,7 +496,7 @@
     color: var(--black);
     text-transform: none;
     display: block;
-    margin-top: 0.1rem;
+    margin-top: 0;
   }
 
   .btn-clip {
@@ -1238,7 +1240,7 @@ function renderProduction() {
   const pw = isHe ? (p.playwrightHe || p.playwright) : p.playwright;
   let leftHtml = `<div class="prod-title-in-col">${titleStr}</div>`;
   if (pw) leftHtml += `<div class="prod-playwright-col">${isHe ? `מאת ${pw}` : `by ${pw}`}</div>`;
-  leftHtml += `<div class="prod-venue-name" style="margin-top:1rem;">${venueStr}</div>`;
+  leftHtml += `<div class="prod-venue-name">${venueStr}</div>`;
   leftHtml += `<div class="prod-year-line">${p.year}</div>`;
   if (directorVal) leftHtml += `<div class="prod-director-line">${isHe ? 'בימוי' : 'Director'}<span>${directorVal}</span></div>`;
   document.getElementById('prod-venue-year').innerHTML = leftHtml;
