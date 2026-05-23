@@ -50,6 +50,7 @@
     color: var(--black);
     cursor: pointer;
     text-decoration: none;
+    line-height: 1;
   }
 
   .nav-links {
@@ -175,7 +176,7 @@
     opacity: 1;
     transform: translateY(0);
   }
-  body.rtl .slide-label { text-align: right; }
+  body.rtl .slide-label { text-align: left; direction: ltr; }
 
   .hero-overlay {
     position: absolute;
@@ -682,9 +683,9 @@
 <body>
 
 <nav id="main-nav">
-  <div style="display:flex; align-items:baseline; gap:0.6rem;">
+  <div style="display:flex; flex-direction:column; gap:0;">
     <a class="nav-logo" onclick="showPage('home')" id="nav-logo-text">Niv Manor</a>
-    <span id="nav-subtitle" style="font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--gray); font-family:var(--font-sans);">Theater Design</span>
+    <span id="nav-subtitle" style="font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--gray); font-family:var(--font-sans); line-height:1;">Theater Design</span>
   </div>
   <div style="display:flex; align-items:center; gap:1.5rem;">
     <ul class="nav-links">
