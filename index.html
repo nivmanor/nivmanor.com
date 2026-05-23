@@ -612,7 +612,15 @@
 
   body.rtl #page-about p { font-size: 1.125rem; }
 
-  .about-contact {
+  .about-photo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    margin-bottom: 2rem;
+    filter: grayscale(20%);
+  }
     margin-top: 3rem;
     padding-top: 2rem;
     border-top: 1px solid var(--light);
@@ -754,6 +762,7 @@
 <!-- ══ ABOUT PAGE ══ -->
 <div id="page-about" class="page">
   <h2 data-en="About" data-he="אודות" style="display:none;">About</h2>
+  <img src="nivmanor6.jpg" alt="Niv Manor" class="about-photo">
   <div id="about-en">
     <p>Niv Manor is a theater designer based in Tel Aviv. A graduate of the Department of Theater Arts at Tel Aviv University, he has been creating worlds on stage for over two decades in theater and opera, alongside some of Israel's leading directors — from intimate chamber plays to musical theater and large-scale opera productions.</p>
     <p id="about-productions-en"></p>
