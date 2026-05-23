@@ -121,7 +121,7 @@
 
   .hero-container {
     width: 100%;
-    max-width: min(72vw, calc((100vh - 9rem) * 16 / 10 * 0.8));
+    max-width: min(86vw, calc((100vh - 9rem) * 16 / 10 * 0.96));
   }
 
   .hero-frame {
@@ -332,10 +332,11 @@
   .gallery-nav-row {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     padding: 0.6rem 2.5rem;
     max-width: min(72vw, calc((100vh - 9rem) * 16 / 10 * 0.8));
     margin: 0 auto;
+    gap: 2rem;
   }
 
   .gallery-thumbs {
@@ -384,7 +385,7 @@
     display: grid;
     grid-template-columns: 1fr auto;
     gap: 3rem;
-    padding: 2rem 2.5rem 5rem;
+    padding: 1.5rem 2.5rem 5rem;
     max-width: min(72vw, calc((100vh - 9rem) * 16 / 10 * 0.8));
     margin: 0 auto;
     align-items: start;
@@ -398,21 +399,27 @@
     .gallery-nav-row { max-width: 100%; }
   }
 
-  .prod-left { }
+  /* title block above image */
+  .prod-header-top {
+    padding: 0.5rem 2.5rem 1.2rem;
+    max-width: min(72vw, calc((100vh - 9rem) * 16 / 10 * 0.8));
+    margin: 0 auto;
+    width: 100%;
+  }
 
   .prod-title-large {
     font-family: var(--font-sans);
-    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-size: clamp(1.8rem, 3.5vw, 3rem);
     font-weight: 400;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     line-height: 1.05;
     color: var(--black);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.3rem;
   }
 
   body.rtl .prod-title-large {
-    font-size: clamp(1.8rem, 3.5vw, 3rem);
+    font-size: clamp(1.6rem, 3vw, 2.6rem);
     letter-spacing: 0.01em;
   }
 
@@ -421,7 +428,6 @@
     font-size: 0.85rem;
     font-style: italic;
     color: var(--gray);
-    margin-bottom: 1rem;
     letter-spacing: 0.02em;
   }
 
@@ -432,6 +438,35 @@
     text-transform: uppercase;
     color: var(--black);
     line-height: 2;
+  }
+
+  .prod-venue-name {
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--black);
+  }
+
+  .prod-year-line {
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    color: var(--black);
+    margin-bottom: 0.8rem;
+  }
+
+  .prod-director-line {
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: var(--gray);
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+
+  .prod-director-line span {
+    color: var(--black);
   }
 
   .btn-clip {
@@ -753,11 +788,17 @@
   <div class="production-back">
     <button class="btn-back" id="btn-back-work" onclick="showPage('work')" data-en="All Work" data-he="כל העבודות">All Work</button>
   </div>
+  <!-- title above image -->
+  <div class="prod-header-top">
+    <div class="prod-title-large" id="prod-title"></div>
+    <div class="prod-playwright" id="prod-playwright"></div>
+  </div>
   <div class="prod-image-wrap">
     <div class="gallery-main" id="gallery-main">
       <div class="gallery-main-placeholder" id="gallery-placeholder"></div>
     </div>
   </div>
+  <!-- counter centered below image -->
   <div class="gallery-nav-row">
     <div class="gallery-thumbs" id="gallery-thumbs"></div>
     <div class="prod-prev-next">
@@ -765,10 +806,9 @@
       <button class="btn-prod-nav" id="btn-next-img" onclick="navigateImg(1)">Next</button>
     </div>
   </div>
+  <!-- two columns below -->
   <div class="prod-info-row">
     <div class="prod-left">
-      <div class="prod-title-large" id="prod-title"></div>
-      <div class="prod-playwright" id="prod-playwright"></div>
       <div class="prod-venue-year" id="prod-venue-year"></div>
       <button class="btn-clip" id="prod-clip-btn" style="display:none;"></button>
       <div class="prod-desc" id="prod-desc"></div>
@@ -1167,7 +1207,13 @@ function renderProduction() {
   const pwEl = document.getElementById('prod-playwright');
   const pw = isHe ? (p.playwrightHe || p.playwright) : p.playwright;
   pwEl.textContent = pw ? (isHe ? `מאת ${pw}` : `by ${pw}`) : '';
-  document.getElementById('prod-venue-year').innerHTML = `${isHe ? (p.venueHe || p.venue) : p.venue}<br>${p.year}`;
+
+  const directorVal = isHe ? (p.directorHe || p.director) : p.director;
+  const venueStr = isHe ? (p.venueHe || p.venue) : p.venue;
+  let leftHtml = `<div class="prod-venue-name">${venueStr}</div>`;
+  leftHtml += `<div class="prod-year-line">${p.year}</div>`;
+  if (directorVal) leftHtml += `<div class="prod-director-line">${isHe ? 'בימוי: ' : 'Dir: '}<span>${directorVal}</span></div>`;
+  document.getElementById('prod-venue-year').innerHTML = leftHtml;
 
   // clip button
   const clipBtn = document.getElementById('prod-clip-btn');
@@ -1180,20 +1226,18 @@ function renderProduction() {
   }
   document.getElementById('prod-desc').textContent = p.desc || '';
 
-  // right column — credits
+  // right column — credits (without director)
   const meta = document.getElementById('prod-meta');
   const nivName = isHe ? 'ניב מנור' : 'Niv Manor';
   const costumeVal = isHe ? (p.costumeHe || p.costume) : p.costume;
   const lightingVal = isHe ? (p.lightingHe || p.lighting) : p.lighting;
-  const directorVal = isHe ? (p.directorHe || p.director) : p.director;
   const videoVal = isHe ? (p.videoHe || p.video) : p.video;
 
   const credits = [
     [isHe ? 'עיצוב תפאורה' : 'Set Designer',      nivName],
-    [isHe ? 'עיצוב תלבושות' : 'Costume Designer',  costumeVal || nivName],
+    [isHe ? 'עיצוב תלבושות' : 'Costume Designer',  costumeVal],
     [isHe ? 'עיצוב תאורה' : 'Lighting Designer',   lightingVal],
     [isHe ? 'עיצוב וידאו' : 'Video Designer',      videoVal],
-    [isHe ? 'בימוי' : 'Director',                   directorVal],
   ].filter(([, val]) => val);
   meta.innerHTML = credits.map(([label, val]) => `
     <div class="prod-meta-row">
@@ -1312,20 +1356,25 @@ function buildAboutProductions(isHe) {
   const heEl = document.getElementById('about-productions-he');
   if (!enEl || !heEl) return;
 
-  // Opera venue keywords — always shown first
   const isOpera = v => v && v.toLowerCase().includes('opera');
 
-  // Group by venue, sorted: opera first, then by most recent year
+  // Group by venue — only showInAbout, sorted chronologically within each venue
   const venueMap = {};
-  productions.forEach(p => {
-    if (!p.showInAbout) return;
-    const key = p.venue;
-    if (!venueMap[key]) venueMap[key] = { venue: p.venue, venueHe: p.venueHe, titles: [], titlesHe: [], maxYear: 0 };
-    venueMap[key].titles.push(p.title);
-    venueMap[key].titlesHe.push(p.titleHe);
-    if (p.year > venueMap[key].maxYear) venueMap[key].maxYear = p.year;
-  });
+  productions
+    .filter(p => {
+      const v = p.showInAbout;
+      return v === true || v === 'TRUE' || v === 'true' || v === 1;
+    })
+    .sort((a, b) => b.year - a.year)  // newest first within venue
+    .forEach(p => {
+      const key = p.venue;
+      if (!venueMap[key]) venueMap[key] = { venue: p.venue, venueHe: p.venueHe, titles: [], titlesHe: [], maxYear: 0 };
+      venueMap[key].titles.push(p.title);
+      venueMap[key].titlesHe.push(p.titleHe);
+      if (p.year > venueMap[key].maxYear) venueMap[key].maxYear = p.year;
+    });
 
+  // Sort venues: opera first, then by most recent production
   const groups = Object.values(venueMap).sort((a, b) => {
     if (isOpera(a.venue) && !isOpera(b.venue)) return -1;
     if (!isOpera(a.venue) && isOpera(b.venue)) return 1;
