@@ -1186,11 +1186,13 @@ function renderProduction() {
   const costumeVal = isHe ? (p.costumeHe || p.costume) : p.costume;
   const lightingVal = isHe ? (p.lightingHe || p.lighting) : p.lighting;
   const directorVal = isHe ? (p.directorHe || p.director) : p.director;
+  const videoVal = isHe ? (p.videoHe || p.video) : p.video;
 
   const credits = [
     [isHe ? 'עיצוב תפאורה' : 'Set Designer',      nivName],
     [isHe ? 'עיצוב תלבושות' : 'Costume Designer',  costumeVal || nivName],
     [isHe ? 'עיצוב תאורה' : 'Lighting Designer',   lightingVal],
+    [isHe ? 'עיצוב וידאו' : 'Video Designer',      videoVal],
     [isHe ? 'בימוי' : 'Director',                   directorVal],
   ].filter(([, val]) => val);
   meta.innerHTML = credits.map(([label, val]) => `
@@ -1457,7 +1459,61 @@ window.addEventListener('scroll', () => {
 });
 
 // ══ LOAD IMAGES FROM JSON ══
-async function loadImages() {
+// ══ CSV PARSER ══
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+  return lines.slice(1).map(line => {
+    // handle commas inside quotes
+    const values = [];
+    let cur = '', inQ = false;
+    for (let i = 0; i < line.length; i++) {
+      if (line[i] === '"') { inQ = !inQ; }
+      else if (line[i] === ',' && !inQ) { values.push(cur); cur = ''; }
+      else { cur += line[i]; }
+    }
+    values.push(cur);
+    const obj = {};
+    headers.forEach((h, i) => obj[h] = (values[i] || '').trim());
+    return obj;
+  });
+}
+
+async function loadData() {
+  // 1. Load productions from Google Sheets
+  try {
+    const sheetUrl = 'https://script.google.com/macros/s/AKfycbz5E2Vbn1TCkAF8J78dEKiy9VOLjS01DBz-lp1yMDFUdL4uRdsQf0CWvU7-ks0iKDkKhg/exec';
+    const res = await fetch(sheetUrl);
+    if (res.ok) {
+      const rows = await res.json();
+      // replace productions array with sheet data
+      productions.length = 0;
+      rows.forEach(r => {
+        if (!r.title) return;
+        productions.push({
+          id: parseInt(r.id) || 0,
+          title: r.title, titleHe: r.titleHe,
+          year: parseInt(r.year) || 0,
+          venue: r.venue, venueHe: r.venueHe,
+          playwright: r.playwright, playwrightHe: r.playwrightHe,
+          director: r.director, directorHe: r.directorHe,
+          costume: r.costume, costumeHe: r.costumeHe,
+          lighting: r.lighting, lightingHe: r.lightingHe,
+          video: r.video || '', videoHe: r.videoHe || '',
+          clipUrl: r.clipUrl || '',
+          showInAbout: r.showInAbout !== 'FALSE',
+          mainImage: r.mainImage || '',
+          emoji: '🎭',
+          images: [],
+        });
+      });
+      console.log(`Loaded ${productions.length} productions from Sheets`);
+    }
+  } catch(e) {
+    console.log('Sheets not loaded, using hardcoded data:', e.message);
+  }
+
+  // 2. Load images from images.json
   try {
     const res = await fetch('images.json');
     if (!res.ok) throw new Error('not found');
@@ -1467,19 +1523,20 @@ async function loadImages() {
       const folder = Object.keys(imagesData).find(k => normalize(k) === normalize(p.title));
       if (folder) {
         p.images = imagesData[folder];
-        p.mainImage = imagesData[folder][0];
+        if (!p.mainImage) p.mainImage = imagesData[folder][0];
       }
     });
   } catch(e) {
     console.log('images.json not loaded:', e.message);
   }
+
   initHero();
   renderWorkGrid();
   applyLang();
 }
 
 // init
-loadImages();
+loadData();
 </script>
 <!-- clip modal -->
 <div class="clip-modal" id="clip-modal" onclick="closeClip()">
