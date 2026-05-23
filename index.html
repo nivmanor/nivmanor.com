@@ -571,7 +571,7 @@
   .lightbox-close:hover { color: white; }
 
   .lightbox-arrow {
-    position: absolute;
+    position: fixed;
     top: 50%;
     transform: translateY(-50%);
     background: none;
@@ -579,14 +579,13 @@
     color: rgba(255,255,255,0.5);
     font-size: 2rem;
     cursor: pointer;
-    padding: 1rem;
+    padding: 1rem 1.5rem;
     transition: color 0.2s;
-    z-index: 10;
-    line-height: 1;
+    z-index: 600;
   }
   .lightbox-arrow:hover { color: white; }
-  .lightbox-prev { left: -3.5rem; }
-  .lightbox-next { right: -3.5rem; }
+  .lightbox-prev { left: 1rem; }
+  .lightbox-next { right: 1rem; }
 
   /* ── ABOUT PAGE ── */
   #page-about {
@@ -1480,12 +1479,12 @@ loadImages();
 
 <!-- lightbox -->
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-arrow lightbox-prev" onclick="event.stopPropagation();lightboxNav(-1)">&#8592;</button>
   <div class="lightbox-inner" onclick="event.stopPropagation()">
     <button class="lightbox-close" onclick="closeLightbox()">Close ×</button>
-    <button class="lightbox-arrow lightbox-prev" onclick="lightboxNav(-1)">&#8592;</button>
     <div id="lightbox-content"></div>
-    <button class="lightbox-arrow lightbox-next" onclick="lightboxNav(1)">&#8594;</button>
   </div>
+  <button class="lightbox-arrow lightbox-next" onclick="event.stopPropagation();lightboxNav(1)">&#8594;</button>
 </div>
 
 </body>
