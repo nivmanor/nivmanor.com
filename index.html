@@ -1554,7 +1554,7 @@ async function loadData() {
           lighting: r.lighting, lightingHe: r.lightingHe,
           video: r.video || '', videoHe: r.videoHe || '',
           clipUrl: r.clipUrl || '',
-          showInAbout: r.showInAbout !== 'FALSE',
+          showInAbout: r.showInAbout === true || r.showInAbout === 'TRUE' || r.showInAbout === 'true',
           mainImage: r.mainImage || '',
           emoji: '🎭',
           images: [],
