@@ -610,6 +610,8 @@
     color: #333;
   }
 
+  body.rtl #page-about p { font-size: 1.125rem; }
+
   .about-contact {
     margin-top: 3rem;
     padding-top: 2rem;
@@ -751,19 +753,17 @@
 
 <!-- ══ ABOUT PAGE ══ -->
 <div id="page-about" class="page">
-  <h2 data-en="About" data-he="אודות">About</h2>
+  <h2 data-en="About" data-he="אודות" style="display:none;">About</h2>
   <div id="about-en">
-    <p>Niv Manor is a set and costume designer based in Tel Aviv. A graduate of the Department of Theatre Arts at Tel Aviv University, he has been creating worlds on stage for over two decades — working across theatre, opera, and dance with some of Israel's most celebrated directors and institutions.</p>
-    <p>His work spans the Israeli Opera, Habima National Theatre, Cameri Theatre, Gesher Theatre, Beit Lessin Theatre, Be'er Sheva Theatre, and Haifa Theatre — from intimate chamber plays to large-scale opera productions.</p>
-    <p>Recent work includes: <em>Nabucco, Orfeo and Euridice, Tosca, Madama Butterfly, The Abduction from the Seraglio, The Magic Flute</em> (Israeli Opera); <em>Who's Afraid of Virginia Woolf?, Alone in Berlin, Dangerous Liaisons, Yehu</em> (Habima); <em>A Chorus Line, Saving Lives, Krum</em> (Cameri); <em>The Kite Runner, Animal Farm</em> (Gesher).</p>
+    <p>Niv Manor is a theater designer based in Tel Aviv. A graduate of the Department of Theater Arts at Tel Aviv University, he has been creating worlds on stage for over two decades in theater and opera, alongside some of Israel's leading directors — from intimate chamber plays to musical theater and large-scale opera productions.</p>
+    <p id="about-productions-en"></p>
   </div>
   <div id="about-he" style="display:none;">
-    <p>ניב מנור הוא מעצב תיאטרון המתגורר בתל אביב. בוגר החוג לאמנות התיאטרון באוניברסיטת תל אביב, הוא יוצר עולמות על הבמה מזה למעלה משני עשורים — בתיאטרון, אופרה ומחול, לצד כמה מהבמאים והמוסדות המובילים בישראל.</p>
-    <p>עבודותיו נפרשות על האופרה הישראלית, תיאטרון הבימה, התיאטרון הקאמרי, תיאטרון גשר, בית ליסין, תיאטרון באר שבע ותיאטרון חיפה — ממחזות קאמריים אינטימיים ועד הפקות אופרה מרהיבות.</p>
-    <p>מבין ההפקות האחרונות: <em>נבוקו, אורפיאו ואאורידיצ׳ה, טוסקה, מאדאם בטרפליי, החטיפה מההרמון, חליל הקסם</em> (האופרה הישראלית); <em>מי מפחד מווירג׳יניה וולף?, לבד בברלין, יחסים מסוכנים, יהוא</em> (הבימה); <em>שורת המקהלה, פיקוח נפש, קרום</em> (הקאמרי); <em>רודף העפיפונים, חוות החיות</em> (גשר).</p>
+    <p>ניב מנור הוא מעצב תיאטרון המתגורר בתל אביב. בוגר החוג לאמנות התיאטרון באוניברסיטת תל אביב, הוא יוצר עולמות על הבמה מזה למעלה משני עשורים בתיאטרון ובאופרה, לצד כמה מהבמאים המובילים בישראל — ממחזות קאמריים, דרך מחזורת זמר והפקות אופרה.</p>
+    <p id="about-productions-he"></p>
   </div>
   <div class="about-contact">
-    <p>Contact: <a href="mailto:nivmanor@gmail.com">nivmanor@gmail.com</a> &nbsp;·&nbsp; <a href="tel:+972523221243">+972-052-3221243</a></p>
+    <p>Contact: <a href="mailto:nivmanor@gmail.com">nivmanor@gmail.com</a> &nbsp;·&nbsp; <a href="tel:+972523221243" id="about-phone-en">+972-52-3221243</a><a href="tel:+972523221243" id="about-phone-he" style="display:none;">052-3221243</a></p>
   </div>
   <footer style="margin: 4rem -2.5rem 0; padding: 1.5rem 2.5rem;">
     <span>© 2025 Niv Manor</span>
@@ -774,7 +774,7 @@
 <script>
 // ══ DATA ══
 const productions = [
-  { id: 1,  year: 2022, title: "A Couple", titleHe: "זוּג", venue: "Beit Lessin Theatre", venueHe: "תיאטרון בית ליסין", emoji: "🌿", playwright: "Edna Mazya", playwrightHe: "עדנה מזי״א", director: "Ilan Ronen", directorHe: "אילן רונן", costume: "Aviah Bash", costumeHe: "אביה בש", lighting: "Nadav Barnea", lightingHe: "נדב ברנע", desc: "", clipUrl: "", mainImage: "images/a couple/a5f151_9d5a587278414b1bb4c42c91b33e3d9c~mv2.jpeg",
+  { id: 1,  year: 2022, title: "A Couple", titleHe: "זוּג", venue: "Beit Lessin Theatre", venueHe: "תיאטרון בית ליסין", emoji: "🌿", playwright: "Edna Mazya", playwrightHe: "עדנה מזי״א", director: "Ilan Ronen", directorHe: "אילן רונן", costume: "Aviah Bash", costumeHe: "אביה בש", lighting: "Nadav Barnea", lightingHe: "נדב ברנע", desc: "", clipUrl: "", showInAbout: true, mainImage: "images/a couple/a5f151_9d5a587278414b1bb4c42c91b33e3d9c~mv2.jpeg",
   images: [
     "images/a couple/a5f151_9d5a587278414b1bb4c42c91b33e3d9c~mv2.jpeg",
     "images/a couple/a5f151_cd164976cbe045c992e7153647174289~mv2.jpg",
@@ -785,7 +785,7 @@ const productions = [
     "images/a couple/a5f151_d54f84923b964b43bd4843328a93220d~mv2.jpg",
     "images/a couple/a5f151_0440ca51eac7438da95bacfa7b4fb1bc~mv2.jpeg",
   ]},
-  { id: 2,  year: 2022, title: "Games in the Backyard", titleHe: "משחקים בחצר האחורית", venue: "Beit Lessin Theatre", venueHe: "תיאטרון בית ליסין", emoji: "🏚", playwright: "Edna Mazya", playwrightHe: "עדנה מזי״א", director: "Ido Rosenberg", directorHe: "עידו רוזנברג", costume: "Rene Gliksman & Limka", costumeHe: "רנה גליקסמן ולימקה", lighting: "Keren Granek", lightingHe: "קרן גרנק", desc: "", clipUrl: "https://www.youtube.com/watch?v=uxoRmXD-F4w", mainImage: "images/Games in the backyard/a5f151_ff0e5c658bf645798cdda0d4092bd0da~mv2.jpg",
+  { id: 2,  year: 2022, title: "Games in the Backyard", titleHe: "משחקים בחצר האחורית", venue: "Beit Lessin Theatre", venueHe: "תיאטרון בית ליסין", emoji: "🏚", playwright: "Edna Mazya", playwrightHe: "עדנה מזי״א", director: "Ido Rosenberg", directorHe: "עידו רוזנברג", costume: "Rene Gliksman & Limka", costumeHe: "רנה גליקסמן ולימקה", lighting: "Keren Granek", lightingHe: "קרן גרנק", desc: "", clipUrl: "https://www.youtube.com/watch?v=uxoRmXD-F4w", showInAbout: true, mainImage: "images/Games in the backyard/a5f151_ff0e5c658bf645798cdda0d4092bd0da~mv2.jpg",
   images: [
     "images/Games in the backyard/a5f151_ff0e5c658bf645798cdda0d4092bd0da~mv2.jpg",
     "images/Games in the backyard/a5f151_e14dd6daae9e4335acc25f82112dcdfa~mv2.jpg",
@@ -796,7 +796,7 @@ const productions = [
     "images/Games in the backyard/a5f151_3f7d823cf72041a8be64bbe9bc5298e8~mv2.jpg",
     "images/Games in the backyard/a5f151_2631da7dabe74b5d948b9138a02b12b9~mv2.jpg",
   ]},
-  { id: 3,  year: 2022, title: "Saving Lives", titleHe: "פיקוח נפש", venue: "Cameri Theatre", venueHe: "תיאטרון הקאמרי", emoji: "🏥", playwright: "Tomer Rosenman", playwrightHe: "תומר רוזנמן", director: "Hada Galron", directorHe: "הדר גלרון", costume: "Orna Smorgonski", costumeHe: "אורנה סמורגונסקי", lighting: "Uri Morag", lightingHe: "אורי מורג", desc: "", clipUrl: "", mainImage: "images/saving lives/a5f151_d51cbb482af94952ae7f53b7ad24fcd7~mv2.jpeg",
+  { id: 3,  year: 2022, title: "Saving Lives", titleHe: "פיקוח נפש", venue: "Cameri Theatre", venueHe: "תיאטרון הקאמרי", emoji: "🏥", playwright: "Tomer Rosenman", playwrightHe: "תומר רוזנמן", director: "Hada Galron", directorHe: "הדר גלרון", costume: "Orna Smorgonski", costumeHe: "אורנה סמורגונסקי", lighting: "Uri Morag", lightingHe: "אורי מורג", desc: "", clipUrl: "", showInAbout: true, mainImage: "images/saving lives/a5f151_d51cbb482af94952ae7f53b7ad24fcd7~mv2.jpeg",
   images: [
     "images/saving lives/a5f151_d51cbb482af94952ae7f53b7ad24fcd7~mv2.jpeg",
     "images/saving lives/a5f151_1df8c9d6def648ad9949c598a66e95d1~mv2.jpeg",
@@ -806,7 +806,7 @@ const productions = [
     "images/saving lives/a5f151_e493c4306cca4dd5bc3171a46607119c~mv2.jpeg",
     "images/saving lives/a5f151_42d0c36f22e848b99291a1666591adc7~mv2.jpg",
   ]},
-  { id: 4,  year: 2018, title: "A Chorus Line", titleHe: "שורת המקהלה", venue: "Cameri Theatre", venueHe: "תיאטרון הקאמרי", emoji: "💃", playwright: "James Kirkwood Jr. and Nicholas Dante", playwrightHe: "ג׳יימס קירקווד ג׳וניור וניקולס דנטה", director: "Tsedi Tsarfati", directorHe: "צדי צרפתי", costume: "Yuval Kaspin", costumeHe: "יובל כספין", lighting: "Keren Granek", lightingHe: "קרן גרנק", desc: "", clipUrl: "", mainImage: "images/a chorus line/a5f151_faf0819d7fab454694fc6283166c5556~mv2.jpeg",
+  { id: 4,  year: 2018, title: "A Chorus Line", titleHe: "שורת המקהלה", venue: "Cameri Theatre", venueHe: "תיאטרון הקאמרי", emoji: "💃", playwright: "James Kirkwood Jr. and Nicholas Dante", playwrightHe: "ג׳יימס קירקווד ג׳וניור וניקולס דנטה", director: "Tsedi Tsarfati", directorHe: "צדי צרפתי", costume: "Yuval Kaspin", costumeHe: "יובל כספין", lighting: "Keren Granek", lightingHe: "קרן גרנק", desc: "", clipUrl: "", showInAbout: true, mainImage: "images/a chorus line/a5f151_faf0819d7fab454694fc6283166c5556~mv2.jpeg",
   images: [
     "images/a chorus line/a5f151_faf0819d7fab454694fc6283166c5556~mv2.jpeg",
     "images/a chorus line/a5f151_34d3aa9fe87744cd88866c4526f2df84~mv2.jpg",
@@ -818,7 +818,7 @@ const productions = [
     "images/a chorus line/a5f151_9259089113b04d70b3eea87cf99fff05~mv2.jpeg",
     "images/a chorus line/a5f151_8f034d871f0649d0ba52f1fba88306b2~mv2.jpg",
   ]},
-  { id: 5,  year: 2018, title: "The Magic Flute", titleHe: "חליל הקסם", venue: "The Israeli Opera", venueHe: "האופרה הישראלית", emoji: "🎶", playwright: "Mozart", playwrightHe: "מוצרט", director: "Shirit Lee-Weiss", directorHe: "שירית לי-ווייס", costume: "Ula Shevtzov", costumeHe: "אולה שבצוב", lighting: "Ziv Voloshin", lightingHe: "זיו וולושין", desc: "", clipUrl: "", mainImage: "images/the magic flute/a5f151_1d025231f58b4a159bbe38015edf3edf~mv2.jpg",
+  { id: 5,  year: 2018, title: "The Magic Flute", titleHe: "חליל הקסם", venue: "The Israeli Opera", venueHe: "האופרה הישראלית", emoji: "🎶", playwright: "Mozart", playwrightHe: "מוצרט", director: "Shirit Lee-Weiss", directorHe: "שירית לי-ווייס", costume: "Ula Shevtzov", costumeHe: "אולה שבצוב", lighting: "Ziv Voloshin", lightingHe: "זיו וולושין", desc: "", clipUrl: "", showInAbout: true, mainImage: "images/the magic flute/a5f151_1d025231f58b4a159bbe38015edf3edf~mv2.jpg",
   images: [
     "images/the magic flute/a5f151_1d025231f58b4a159bbe38015edf3edf~mv2.jpg",
     "images/the magic flute/a5f151_969e5f8713454ff299c3bfe8d4140ec4~mv2.jpg",
@@ -829,7 +829,7 @@ const productions = [
     "images/the magic flute/a5f151_7fc1891584814253863e440c25dac308~mv2.jpg",
     "images/the magic flute/a5f151_17bcb00233054e3b941cd0fabc13f195~mv2.jpg",
   ]},
-  { id: 6,  year: 2018, title: "Who's Afraid of Virginia Woolf?", titleHe: "מי מפחד מווירג׳יניה וולף?", venue: "Habima National Theatre", venueHe: "תיאטרון הבימה", emoji: "🌑", playwright: "Edward Albee", playwrightHe: "אדוארד אלבי", director: "Ilan Ronen", directorHe: "אילן רונן", costume: "Yelena Kerlich", costumeHe: "ילנה קרליך", lighting: "Meir Alon", lightingHe: "מאיר אלון", desc: "", clipUrl: "", mainImage: "images/Who's Afraid of Virginia Woolf/a5f151_ea7622b7e5f245f99655ff1eebf4aed6~mv2.jpg",
+  { id: 6,  year: 2018, title: "Who's Afraid of Virginia Woolf?", titleHe: "מי מפחד מווירג׳יניה וולף?", venue: "Habima National Theatre", venueHe: "תיאטרון הבימה", emoji: "🌑", playwright: "Edward Albee", playwrightHe: "אדוארד אלבי", director: "Ilan Ronen", directorHe: "אילן רונן", costume: "Yelena Kerlich", costumeHe: "ילנה קרליך", lighting: "Meir Alon", lightingHe: "מאיר אלון", desc: "", clipUrl: "", showInAbout: true, mainImage: "images/Who's Afraid of Virginia Woolf/a5f151_ea7622b7e5f245f99655ff1eebf4aed6~mv2.jpg",
   images: [
     "images/Who's Afraid of Virginia Woolf/a5f151_ea7622b7e5f245f99655ff1eebf4aed6~mv2.jpg",
     "images/Who's Afraid of Virginia Woolf/a5f151_a98910d89a1f43638848f391215c7c9f~mv2.jpg",
@@ -840,7 +840,7 @@ const productions = [
     "images/Who's Afraid of Virginia Woolf/a5f151_1f2df0fe40f9454fb0c02ea1e8f29276~mv2.jpg",
     "images/Who's Afraid of Virginia Woolf/a5f151_7697fa1c807b4948b92ee9f5e34daaa6~mv2.jpg",
   ]},
-  { id: 7,  year: 2018, title: "The Kite Runner", titleHe: "רודף העפיפונים", venue: "Gesher Theatre", venueHe: "תיאטרון גשר", emoji: "🪁", playwright: "Matthew Spangler after Khaled Hosseini", playwrightHe: "מת׳יו ספנגלר עפ״י חאלד חוסייני", director: "Noam Shmuel", directorHe: "נועם שמואל", costume: "Avia Bash", costumeHe: "אביה בש", lighting: "Alexander Sikirin", lightingHe: "אלכסנדר סיקירין", desc: "", clipUrl: "", mainImage: "images/the kite runner/a5f151_7013f7d2a1d648cf92426ee6c74ee165~mv2.jpg",
+  { id: 7,  year: 2018, title: "The Kite Runner", titleHe: "רודף העפיפונים", venue: "Gesher Theatre", venueHe: "תיאטרון גשר", emoji: "🪁", playwright: "Matthew Spangler after Khaled Hosseini", playwrightHe: "מת׳יו ספנגלר עפ״י חאלד חוסייני", director: "Noam Shmuel", directorHe: "נועם שמואל", costume: "Avia Bash", costumeHe: "אביה בש", lighting: "Alexander Sikirin", lightingHe: "אלכסנדר סיקירין", desc: "", clipUrl: "", showInAbout: true, mainImage: "images/the kite runner/a5f151_7013f7d2a1d648cf92426ee6c74ee165~mv2.jpg",
   images: [
     "images/the kite runner/a5f151_7013f7d2a1d648cf92426ee6c74ee165~mv2.jpg",
     "images/the kite runner/a5f151_a91f5efe9944478a9150b784b2c2de27~mv2.jpg",
@@ -851,7 +851,7 @@ const productions = [
     "images/the kite runner/a5f151_bcd23b29b56445d9bde0199d459ed984~mv2.jpg",
     "images/the kite runner/a5f151_8a708f9cf7d145599daec6d163a0f517~mv2.jpg",
   ]},
-  { id: 8,  year: 2017, title: "Orfeo and Euridice", titleHe: "אורפיאו ואאורידיצ׳ה", venue: "The Israeli Opera & The Macao Music Festival", venueHe: "האופרה הישראלית בשיתוף פסטיבל המוזיקה של מקאו", emoji: "🎻", playwright: "Gluck", playwrightHe: "גלוק", director: "Yulia Pevzner", directorHe: "יוליה פבזנר", costume: "", costumeHe: "", lighting: "Uri Morag", lightingHe: "אורי מורג", desc: "", clipUrl: "", mainImage: "images/Orfeo and Euridice/a5f151_ce01c93d59f94aa782f3aef838e188ae~mv2.jpg",
+  { id: 8,  year: 2017, title: "Orfeo and Euridice", titleHe: "אורפיאו ואאורידיצ׳ה", venue: "The Israeli Opera & The Macao Music Festival", venueHe: "האופרה הישראלית בשיתוף פסטיבל המוזיקה של מקאו", emoji: "🎻", playwright: "Gluck", playwrightHe: "גלוק", director: "Yulia Pevzner", directorHe: "יוליה פבזנר", costume: "", costumeHe: "", lighting: "Uri Morag", lightingHe: "אורי מורג", desc: "", clipUrl: "", showInAbout: true, mainImage: "images/Orfeo and Euridice/a5f151_ce01c93d59f94aa782f3aef838e188ae~mv2.jpg",
   images: [
     "images/Orfeo and Euridice/a5f151_ce01c93d59f94aa782f3aef838e188ae~mv2.jpg",
     "images/Orfeo and Euridice/a5f151_56b0b044fd8d42ddb3f88b9a011be7da~mv2.jpg",
@@ -862,7 +862,7 @@ const productions = [
     "images/Orfeo and Euridice/a5f151_fb4b40f3607645b1b70039352a8cfb87~mv2.jpg",
     "images/Orfeo and Euridice/a5f151_7c78054d0eae4e418db4e914d10c3bff~mv2.jpg",
   ]},
-  { id: 9,  year: 2017, title: "Tosca", titleHe: "טוסקה", venue: "The Israeli Opera", venueHe: "האופרה הישראלית", emoji: "🌹", playwright: "Puccini", playwrightHe: "פוצ׳יני", director: "Gadi Schechter", directorHe: "גדי שכטר", costume: "", costumeHe: "", lighting: "Uri Morag", lightingHe: "אורי מורג", desc: "", clipUrl: "", mainImage: "images/tosca/a5f151_c3f9838235f447e0b9bfcd821657fa26~mv2.jpg",
+  { id: 9,  year: 2017, title: "Tosca", titleHe: "טוסקה", venue: "The Israeli Opera", venueHe: "האופרה הישראלית", emoji: "🌹", playwright: "Puccini", playwrightHe: "פוצ׳יני", director: "Gadi Schechter", directorHe: "גדי שכטר", costume: "", costumeHe: "", lighting: "Uri Morag", lightingHe: "אורי מורג", desc: "", clipUrl: "", showInAbout: true, mainImage: "images/tosca/a5f151_c3f9838235f447e0b9bfcd821657fa26~mv2.jpg",
   images: [
     "images/tosca/a5f151_c3f9838235f447e0b9bfcd821657fa26~mv2.jpg",
     "images/tosca/a5f151_419f5e02a86c4393b4f7d2783454b7d6~mv2.jpg",
@@ -873,7 +873,7 @@ const productions = [
     "images/tosca/a5f151_c39a093813d0483da287bf0b88b0e276~mv2.jpg",
     "images/tosca/a5f151_839701b8f50e4c06ae4045e43186460d~mv2.jpg",
   ]},
-  { id: 10, year: 2016, title: "Madama Butterfly", titleHe: "מאדאם בטרפליי", venue: "The Israeli Opera", venueHe: "האופרה הישראלית", emoji: "🦋", playwright: "Puccini", playwrightHe: "פוצ׳יני", director: "Gadi Schechter", directorHe: "גדי שכטר", costume: "", costumeHe: "", lighting: "Uri Morag", lightingHe: "אורי מורג", desc: "", clipUrl: "", mainImage: "images/madama butterfly/a5f151_a67787f700b7462190c98c7a705a8245~mv2.jpg",
+  { id: 10, year: 2016, title: "Madama Butterfly", titleHe: "מאדאם בטרפליי", venue: "The Israeli Opera", venueHe: "האופרה הישראלית", emoji: "🦋", playwright: "Puccini", playwrightHe: "פוצ׳יני", director: "Gadi Schechter", directorHe: "גדי שכטר", costume: "", costumeHe: "", lighting: "Uri Morag", lightingHe: "אורי מורג", desc: "", clipUrl: "", showInAbout: true, mainImage: "images/madama butterfly/a5f151_a67787f700b7462190c98c7a705a8245~mv2.jpg",
   images: [
     "images/madama butterfly/a5f151_a67787f700b7462190c98c7a705a8245~mv2.jpg",
     "images/madama butterfly/a5f151_cc0230d473eb4a098551f8fa46d2d5b4~mv2.jpg",
@@ -884,7 +884,7 @@ const productions = [
     "images/madama butterfly/a5f151_0b6c9019d4624459ac746957f6cab9c0~mv2.jpg",
     "images/madama butterfly/a5f151_5a09afdf85ae4ff18f805abf5b70c2c0~mv2.jpg",
   ]},
-  { id: 11, year: 2016, title: "The Abduction from the Seraglio", titleHe: "החטיפה מההרמון", venue: "The Israeli Opera", venueHe: "האופרה הישראלית", emoji: "🕌", playwright: "Mozart", playwrightHe: "מוצרט", director: "Shirit Lee-Weiss", directorHe: "שירית לי-וייס", costume: "Natasha Tuchman-Polyak", costumeHe: "נטשה טוכמן-פוליאק", lighting: "Uri Morag", lightingHe: "אורי מורג", desc: "", clipUrl: "", mainImage: "images/the abduction from the seraglio/a5f151_6db4ecbe21184c4ea61abb7343de41a1~mv2.jpg",
+  { id: 11, year: 2016, title: "The Abduction from the Seraglio", titleHe: "החטיפה מההרמון", venue: "The Israeli Opera", venueHe: "האופרה הישראלית", emoji: "🕌", playwright: "Mozart", playwrightHe: "מוצרט", director: "Shirit Lee-Weiss", directorHe: "שירית לי-וייס", costume: "Natasha Tuchman-Polyak", costumeHe: "נטשה טוכמן-פוליאק", lighting: "Uri Morag", lightingHe: "אורי מורג", desc: "", clipUrl: "", showInAbout: true, mainImage: "images/the abduction from the seraglio/a5f151_6db4ecbe21184c4ea61abb7343de41a1~mv2.jpg",
   images: [
     "images/the abduction from the seraglio/a5f151_6db4ecbe21184c4ea61abb7343de41a1~mv2.jpg",
     "images/the abduction from the seraglio/a5f151_1e8c66f9aad24a8a8bf483c4f05bb2dd~mv2.jpg",
@@ -894,7 +894,7 @@ const productions = [
     "images/the abduction from the seraglio/a5f151_390498269559443b9ede4b975cb7af2c~mv2.jpg",
     "images/the abduction from the seraglio/a5f151_22403a502f804c96bc80af2ccf9763b3~mv2.jpg",
   ]},
-  { id: 12, year: 2016, title: "Alone in Berlin", titleHe: "לבד בברלין", venue: "Habima National Theatre", venueHe: "תיאטרון הבימה", emoji: "🏙", playwright: "Shachar Pinkas after Hans Fallada", playwrightHe: "שחר פנקס על פי האנס פאלאדה", director: "Ilan Ronen", directorHe: "אילן רונן", costume: "Ula Shevtzov", costumeHe: "אולה שבצוב", lighting: "Ziv Voloshin", lightingHe: "זיו וולושין", desc: "", clipUrl: "", mainImage: "images/alone in berlin/a5f151_ea8a95d3649f477eb2d41f0dfedce83a~mv2.jpg",
+  { id: 12, year: 2016, title: "Alone in Berlin", titleHe: "לבד בברלין", venue: "Habima National Theatre", venueHe: "תיאטרון הבימה", emoji: "🏙", playwright: "Shachar Pinkas after Hans Fallada", playwrightHe: "שחר פנקס על פי האנס פאלאדה", director: "Ilan Ronen", directorHe: "אילן רונן", costume: "Ula Shevtzov", costumeHe: "אולה שבצוב", lighting: "Ziv Voloshin", lightingHe: "זיו וולושין", desc: "", clipUrl: "", showInAbout: true, mainImage: "images/alone in berlin/a5f151_ea8a95d3649f477eb2d41f0dfedce83a~mv2.jpg",
   images: [
     "images/alone in berlin/a5f151_ea8a95d3649f477eb2d41f0dfedce83a~mv2.jpg",
     "images/alone in berlin/a5f151_953b44cb29714783acb2d011705af0f8~mv2.jpg",
@@ -905,7 +905,7 @@ const productions = [
     "images/alone in berlin/a5f151_c708dd41182d4307b98a1616bfdddfd9~mv2.jpg",
     "images/alone in berlin/a5f151_19e378ea108a4a6bba5f590f94d7a2b8~mv2.jpg",
   ]},
-  { id: 13, year: 2015, title: "Dangerous Liaisons", titleHe: "יחסים מסוכנים", venue: "Habima National Theatre", venueHe: "תיאטרון הבימה", emoji: "🃏", playwright: "Christopher Hampton", playwrightHe: "כריסטופר המפטון", director: "Ilan Ronen", directorHe: "אילן רונן", costume: "Ula Shevtzov", costumeHe: "אולה שבצוב", lighting: "Ziv Voloshin", lightingHe: "זיו וולושין", desc: "", clipUrl: "", mainImage: "images/dangerous liaisons/a5f151_1ba638f82e724d94b27b073c32d861d1.jpg",
+  { id: 13, year: 2015, title: "Dangerous Liaisons", titleHe: "יחסים מסוכנים", venue: "Habima National Theatre", venueHe: "תיאטרון הבימה", emoji: "🃏", playwright: "Christopher Hampton", playwrightHe: "כריסטופר המפטון", director: "Ilan Ronen", directorHe: "אילן רונן", costume: "Ula Shevtzov", costumeHe: "אולה שבצוב", lighting: "Ziv Voloshin", lightingHe: "זיו וולושין", desc: "", clipUrl: "", showInAbout: true, mainImage: "images/dangerous liaisons/a5f151_1ba638f82e724d94b27b073c32d861d1.jpg",
   images: [
     "images/dangerous liaisons/a5f151_1ba638f82e724d94b27b073c32d861d1.jpg",
     "images/dangerous liaisons/a5f151_f0d20fd6d727410da65d5da138076dae.jpg",
@@ -916,7 +916,7 @@ const productions = [
     "images/dangerous liaisons/a5f151_edb26ba475f2487abae37bdd528667ab~mv2.jpg",
     "images/dangerous liaisons/a5f151_c87c33b2cdb14238bd900d178cfa792a~mv2.jpg",
   ]},
-  { id: 14, year: 2015, title: "Ten Minutes from Home", titleHe: "עשר דקות מהבית", venue: "Habima National Theatre", venueHe: "תיאטרון הבימה", emoji: "🕐", playwright: "Maya Arad", playwrightHe: "מאיה ערד", director: "Shay Pitovsky", directorHe: "שי פיטובסקי", costume: "Natasha Tuchman-Polyak", costumeHe: "נטשה טוכמן-פוליאק", lighting: "Ziv Voloshin", lightingHe: "זיו וולושין", desc: "", clipUrl: "", mainImage: "images/ten minutes from home/a5f151_5d708e2b75db4651938146784025ee2b.jpg",
+  { id: 14, year: 2015, title: "Ten Minutes from Home", titleHe: "עשר דקות מהבית", venue: "Habima National Theatre", venueHe: "תיאטרון הבימה", emoji: "🕐", playwright: "Maya Arad", playwrightHe: "מאיה ערד", director: "Shay Pitovsky", directorHe: "שי פיטובסקי", costume: "Natasha Tuchman-Polyak", costumeHe: "נטשה טוכמן-פוליאק", lighting: "Ziv Voloshin", lightingHe: "זיו וולושין", desc: "", clipUrl: "", showInAbout: true, mainImage: "images/ten minutes from home/a5f151_5d708e2b75db4651938146784025ee2b.jpg",
   images: [
     "images/ten minutes from home/a5f151_5d708e2b75db4651938146784025ee2b.jpg",
     "images/ten minutes from home/a5f151_cd41297d64f24fec9b37ab8096417403.jpg",
@@ -926,7 +926,7 @@ const productions = [
     "images/ten minutes from home/a5f151_74bebe75aa1b4d4b81b78ae2065f5212.jpg",
     "images/ten minutes from home/a5f151_96069dc553a448b295b38f04149d7aee.jpg",
   ]},
-  { id: 15, year: 2015, title: "Animal Farm", titleHe: "חוות החיות", venue: "Gesher Theatre", venueHe: "תיאטרון גשר", emoji: "🐷", playwright: "George Orwell adapted by Peter Hall", playwrightHe: "ג׳ורג׳ אורוול בעיבוד פיטר הול", director: "Noam Shmuel", directorHe: "נועם שמואל", costume: "Avia Bash", costumeHe: "אביה בש", lighting: "Ziv Voloshin", lightingHe: "זיו וולושין", desc: "", clipUrl: "", mainImage: "images/animal farm/a5f151_d450e616d9bd404e945f1d4ae31fc48d.jpg",
+  { id: 15, year: 2015, title: "Animal Farm", titleHe: "חוות החיות", venue: "Gesher Theatre", venueHe: "תיאטרון גשר", emoji: "🐷", playwright: "George Orwell adapted by Peter Hall", playwrightHe: "ג׳ורג׳ אורוול בעיבוד פיטר הול", director: "Noam Shmuel", directorHe: "נועם שמואל", costume: "Avia Bash", costumeHe: "אביה בש", lighting: "Ziv Voloshin", lightingHe: "זיו וולושין", desc: "", clipUrl: "", showInAbout: true, mainImage: "images/animal farm/a5f151_d450e616d9bd404e945f1d4ae31fc48d.jpg",
   images: [
     "images/animal farm/a5f151_d450e616d9bd404e945f1d4ae31fc48d.jpg",
     "images/animal farm/a5f151_c9853bc16b14426aa8708627b81bb741.jpg",
@@ -937,7 +937,7 @@ const productions = [
     "images/animal farm/a5f151_5910ab3844a84249a708fd73135319ec.jpg",
     "images/animal farm/a5f151_6e98c09408f34477a67ceaa8b39eb474.jpg",
   ]},
-  { id: 16, year: 2015, title: "Yehu", titleHe: "יהוא", venue: "Habima National Theatre", venueHe: "תיאטרון הבימה", emoji: "⚔️", playwright: "Gilad Evron", playwrightHe: "גלעד עברון", director: "Ilan Ronen", directorHe: "אילן רונן", costume: "Natasha Tuchman-Polyak", costumeHe: "נטשה טוכמן-פוליאק", lighting: "Ziv Voloshin", lightingHe: "זיו וולושין", desc: "", clipUrl: "", mainImage: "images/yehu/a5f151_1775aae653ea4056ab57b9f379a0bbe1.jpg",
+  { id: 16, year: 2015, title: "Yehu", titleHe: "יהוא", venue: "Habima National Theatre", venueHe: "תיאטרון הבימה", emoji: "⚔️", playwright: "Gilad Evron", playwrightHe: "גלעד עברון", director: "Ilan Ronen", directorHe: "אילן רונן", costume: "Natasha Tuchman-Polyak", costumeHe: "נטשה טוכמן-פוליאק", lighting: "Ziv Voloshin", lightingHe: "זיו וולושין", desc: "", clipUrl: "", showInAbout: true, mainImage: "images/yehu/a5f151_1775aae653ea4056ab57b9f379a0bbe1.jpg",
   images: [
     "images/yehu/a5f151_1775aae653ea4056ab57b9f379a0bbe1.jpg",
     "images/yehu/a5f151_2a09835598554a33894b7ed1b1252634.jpg",
@@ -947,7 +947,7 @@ const productions = [
     "images/yehu/a5f151_45101facfc904b1e910cb8e6956c413b.jpg",
     "images/yehu/a5f151_39663a09fcd24cd2b71ef31413a8bd6d.jpg",
   ]},
-  { id: 17, year: 2015, title: "Adventures of a Donkey That is All Pure", titleHe: "הרפתקאות חמור שכולו תכלת", venue: "Haifa Theatre", venueHe: "תיאטרון חיפה", emoji: "🫏", playwright: "Shay Pitovsky after Nachum Gutman", playwrightHe: "שי פיטובסקי על פי נחום גוטמן", director: "Shay Pitovsky", directorHe: "שי פיטובסקי", costume: "Natasha Tuchman-Polyak", costumeHe: "נטשה טוכמן-פוליאק", lighting: "Ziv Voloshin", lightingHe: "זיו וולושין", desc: "", clipUrl: "", mainImage: "images/adventures of a donkey that is all pure/a5f151_e06320f064af4df8abada8fb640fd345~mv2.jpg",
+  { id: 17, year: 2015, title: "Adventures of a Donkey That is All Pure", titleHe: "הרפתקאות חמור שכולו תכלת", venue: "Haifa Theatre", venueHe: "תיאטרון חיפה", emoji: "🫏", playwright: "Shay Pitovsky after Nachum Gutman", playwrightHe: "שי פיטובסקי על פי נחום גוטמן", director: "Shay Pitovsky", directorHe: "שי פיטובסקי", costume: "Natasha Tuchman-Polyak", costumeHe: "נטשה טוכמן-פוליאק", lighting: "Ziv Voloshin", lightingHe: "זיו וולושין", desc: "", clipUrl: "", showInAbout: true, mainImage: "images/adventures of a donkey that is all pure/a5f151_e06320f064af4df8abada8fb640fd345~mv2.jpg",
   images: [
     "images/adventures of a donkey that is all pure/a5f151_e06320f064af4df8abada8fb640fd345~mv2.jpg",
     "images/adventures of a donkey that is all pure/a5f151_145135e11ec64b8fa1776d1042b7eb0e.jpg",
@@ -956,7 +956,7 @@ const productions = [
     "images/adventures of a donkey that is all pure/a5f151_e78532456602477d94d9d517b07ff030.jpg",
     "images/adventures of a donkey that is all pure/a5f151_7875d287c5ea460f8b57afd2116c7a08.jpg",
   ]},
-  { id: 18, year: 2014, title: "God Waits at the Station", titleHe: "אלוהים מחכה בתחנה", venue: "Habima National Theatre", venueHe: "תיאטרון הבימה", emoji: "🚉", playwright: "Maya Arad", playwrightHe: "מאיה ערד", director: "Shay Pitovsky", directorHe: "שי פיטובסקי", costume: "Natasha Tuchman-Polyak", costumeHe: "נטשה טוכמן-פוליאק", lighting: "Ziv Voloshin", lightingHe: "זיו וולושין", desc: "", clipUrl: "", mainImage: "images/god waits at the station/a5f151_0b37b8001f184949af42bed89f8dc652.jpg",
+  { id: 18, year: 2014, title: "God Waits at the Station", titleHe: "אלוהים מחכה בתחנה", venue: "Habima National Theatre", venueHe: "תיאטרון הבימה", emoji: "🚉", playwright: "Maya Arad", playwrightHe: "מאיה ערד", director: "Shay Pitovsky", directorHe: "שי פיטובסקי", costume: "Natasha Tuchman-Polyak", costumeHe: "נטשה טוכמן-פוליאק", lighting: "Ziv Voloshin", lightingHe: "זיו וולושין", desc: "", clipUrl: "", showInAbout: true, mainImage: "images/god waits at the station/a5f151_0b37b8001f184949af42bed89f8dc652.jpg",
   images: [
     "images/god waits at the station/a5f151_0b37b8001f184949af42bed89f8dc652.jpg",
     "images/god waits at the station/a5f151_2ba94a3b91484889a27d73143fdcfef3.jpg",
@@ -966,7 +966,7 @@ const productions = [
     "images/god waits at the station/a5f151_284909aca2bb44a2995142cab106a425.jpg",
     "images/god waits at the station/a5f151_37d254928d7a4da49a8d8fb843ba8673.jpg",
   ]},
-  { id: 19, year: 2013, title: "The Oath", titleHe: "השבועה", venue: "Habima National Theatre", venueHe: "תיאטרון הבימה", emoji: "📜", playwright: "Shay Pitovsky", playwrightHe: "שי פיטובסקי", director: "Shay Pitovsky", directorHe: "שי פיטובסקי", costume: "Natasha Tuchman-Polyak", costumeHe: "נטשה טוכמן פוליאק", lighting: "Ziv Voloshin", lightingHe: "זיו וולושין", desc: "", clipUrl: "", mainImage: "images/the oath/a5f151_4f1c3401c9f94285a67f648b7eddc540.jpg",
+  { id: 19, year: 2013, title: "The Oath", titleHe: "השבועה", venue: "Habima National Theatre", venueHe: "תיאטרון הבימה", emoji: "📜", playwright: "Shay Pitovsky", playwrightHe: "שי פיטובסקי", director: "Shay Pitovsky", directorHe: "שי פיטובסקי", costume: "Natasha Tuchman-Polyak", costumeHe: "נטשה טוכמן פוליאק", lighting: "Ziv Voloshin", lightingHe: "זיו וולושין", desc: "", clipUrl: "", showInAbout: true, mainImage: "images/the oath/a5f151_4f1c3401c9f94285a67f648b7eddc540.jpg",
   images: [
     "images/the oath/a5f151_4f1c3401c9f94285a67f648b7eddc540.jpg",
     "images/the oath/a5f151_6e2907b9acf449689b8e8b3a1c9f472e.jpg",
@@ -976,7 +976,7 @@ const productions = [
     "images/the oath/a5f151_34693f2060914a948ed6ce87e5e1884b.jpg",
     "images/the oath/a5f151_65d14f28698a45cfb30ebaa2051b12ee.jpg",
   ]},
-  { id: 20, year: 2011, title: "Mother of Him", titleHe: "אמא שלו", venue: "Beit Lessin Theatre", venueHe: "תיאטרון בית ליסין", emoji: "🌸", playwright: "Evan Placey", playwrightHe: "איוון פלאסי", director: "Ilan Ronen", directorHe: "אילן רונן", costume: "Dana Tsarfaty", costumeHe: "דנה צרפתי", lighting: "Uri Morag", lightingHe: "אורי מורג", desc: "", clipUrl: "", mainImage: "images/mother of him/a5f151_ddca8195ad8b6eb84a8fd677e4b4a36a.jpg",
+  { id: 20, year: 2011, title: "Mother of Him", titleHe: "אמא שלו", venue: "Beit Lessin Theatre", venueHe: "תיאטרון בית ליסין", emoji: "🌸", playwright: "Evan Placey", playwrightHe: "איוון פלאסי", director: "Ilan Ronen", directorHe: "אילן רונן", costume: "Dana Tsarfaty", costumeHe: "דנה צרפתי", lighting: "Uri Morag", lightingHe: "אורי מורג", desc: "", clipUrl: "", showInAbout: true, mainImage: "images/mother of him/a5f151_ddca8195ad8b6eb84a8fd677e4b4a36a.jpg",
   images: [
     "images/mother of him/a5f151_ddca8195ad8b6eb84a8fd677e4b4a36a.jpg",
     "images/mother of him/a5f151_2b92f8182b978600785e572f451cf62c.jpg",
@@ -1038,6 +1038,10 @@ function applyLang() {
   document.getElementById('contact-label').textContent = t.contactLabel;
   document.getElementById('phone-en').style.display = isHe ? 'none' : '';
   document.getElementById('phone-he').style.display = isHe ? '' : 'none';
+  const apen = document.getElementById('about-phone-en');
+  const aphe = document.getElementById('about-phone-he');
+  if (apen) apen.style.display = isHe ? 'none' : '';
+  if (aphe) aphe.style.display = isHe ? '' : 'none';
   const footerEl = document.getElementById('footer-title');
   if (footerEl) footerEl.innerHTML = t.footerTitle;
   document.getElementById('btn-back-work').textContent = t.backBtn;
@@ -1064,6 +1068,9 @@ function applyLang() {
   // about sections
   document.getElementById('about-en').style.display = isHe ? 'none' : 'block';
   document.getElementById('about-he').style.display = isHe ? 'block' : 'none';
+
+  // build about productions text
+  buildAboutProductions(isHe);
 
   // re-render dynamic content
   renderWorkGrid();
@@ -1267,6 +1274,45 @@ document.addEventListener('keydown', e => {
     if (e.key === 'ArrowLeft') lightboxNav(-1);
   }
 });
+
+function buildAboutProductions(isHe) {
+  const enEl = document.getElementById('about-productions-en');
+  const heEl = document.getElementById('about-productions-he');
+  if (!enEl || !heEl) return;
+
+  // Opera venue keywords — always shown first
+  const isOpera = v => v && v.toLowerCase().includes('opera');
+
+  // Group by venue, sorted: opera first, then by most recent year
+  const venueMap = {};
+  productions.forEach(p => {
+    if (!p.showInAbout) return;
+    const key = p.venue;
+    if (!venueMap[key]) venueMap[key] = { venue: p.venue, venueHe: p.venueHe, titles: [], titlesHe: [], maxYear: 0 };
+    venueMap[key].titles.push(p.title);
+    venueMap[key].titlesHe.push(p.titleHe);
+    if (p.year > venueMap[key].maxYear) venueMap[key].maxYear = p.year;
+  });
+
+  const groups = Object.values(venueMap).sort((a, b) => {
+    if (isOpera(a.venue) && !isOpera(b.venue)) return -1;
+    if (!isOpera(a.venue) && isOpera(b.venue)) return 1;
+    return b.maxYear - a.maxYear;
+  });
+
+  const buildText = (isHe) => {
+    const prefix = isHe ? 'בין ההפקות שעיצב: ' : 'Among his productions: ';
+    const parts = groups.map(g => {
+      const titles = isHe ? g.titlesHe : g.titles;
+      const venue = isHe ? (g.venueHe || g.venue) : g.venue;
+      return `<em>${titles.join(', ')}</em> (${venue})`;
+    });
+    return prefix + parts.join('; ') + '.';
+  };
+
+  enEl.innerHTML = buildText(false);
+  heEl.innerHTML = buildText(true);
+}
 
 function navigateImg(dir) {
   const p = productions[currentProdIndex];
