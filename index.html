@@ -460,43 +460,47 @@
     color: var(--gray);
     letter-spacing: 0.02em;
     margin-top: 0;
+    line-height: 1.1;
   }
 
   .prod-venue-name {
     font-family: var(--font-sans);
-    font-size: 0.78rem;
-    letter-spacing: 0.08em;
+    font-size: 0.55rem;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: var(--black);
-    font-weight: 600;
+    color: var(--gray);
+    font-weight: 400;
     margin-top: 0.4rem;
+    line-height: 1.2;
   }
 
   .prod-year-line {
     font-family: var(--font-sans);
-    font-size: 0.78rem;
-    letter-spacing: 0.08em;
+    font-size: 0.85rem;
     color: var(--black);
     margin-top: 0;
+    line-height: 1.1;
   }
 
   .prod-director-line {
     font-family: var(--font-sans);
-    font-size: 0.6rem;
+    font-size: 0.55rem;
     letter-spacing: 0.15em;
     color: var(--gray);
     text-transform: uppercase;
-    margin-top: 0.3rem;
+    margin-top: 0.4rem;
     display: block;
+    line-height: 1.2;
   }
 
   .prod-director-line span {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     letter-spacing: 0.01em;
     color: var(--black);
     text-transform: none;
     display: block;
     margin-top: 0;
+    line-height: 1.1;
   }
 
   .btn-clip {
@@ -720,6 +724,24 @@
   }
   .about-contact a:hover { border-bottom-color: var(--black); }
 
+  .btn-download-bio {
+    display: inline-block;
+    font-family: var(--font-sans);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gray);
+    text-decoration: none;
+    border: 1px solid var(--light);
+    padding: 6px 16px;
+    border-radius: 2px;
+    background: none;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+    margin-bottom: 1.5rem;
+  }
+  .btn-download-bio:hover { color: var(--black); border-color: var(--gray); }
+
   /* contact bar */
   .contact-bar {
     position: fixed;
@@ -860,6 +882,8 @@
     <p id="about-productions-he"></p>
   </div>
   <div class="about-contact">
+    <button class="btn-download-bio" id="btn-download-bio" onclick="generateBio()">↓ Download Bio</button>
+  </div>
     <p>Contact: <a href="mailto:nivmanor@gmail.com">nivmanor@gmail.com</a> &nbsp;·&nbsp; <a href="tel:+972523221243" id="about-phone-en">+972-52-3221243</a><a href="tel:+972523221243" id="about-phone-he" style="display:none;">052-3221243</a></p>
   </div>
   <footer style="margin: 4rem -2.5rem 0; padding: 1.5rem 2.5rem;">
@@ -1171,6 +1195,9 @@ function applyLang() {
   // about sections
   document.getElementById('about-en').style.display = isHe ? 'none' : 'block';
   document.getElementById('about-he').style.display = isHe ? 'block' : 'none';
+
+  const bioBtn = document.getElementById('btn-download-bio');
+  if (bioBtn) bioBtn.textContent = isHe ? '↓ הורד ביו' : '↓ Download Bio';
 
   // build about productions text
   buildAboutProductions(isHe);
@@ -1613,6 +1640,104 @@ async function loadData() {
   initHero();
   renderWorkGrid();
   applyLang();
+}
+
+// ══ GENERATE BIO DOC ══
+async function generateBio() {
+  const btn = document.getElementById('btn-download-bio');
+  const isHe = lang === 'he';
+  btn.textContent = isHe ? '...מייצר' : 'Generating...';
+
+  // Load docx library
+  if (!window.docx) {
+    await new Promise((res, rej) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.min.js';
+      s.onload = res; s.onerror = rej;
+      document.head.appendChild(s);
+    });
+  }
+
+  const { Document, Packer, Paragraph, TextRun } = window.docx;
+
+  // Build productions text from live data
+  const venueMap = {};
+  productions
+    .filter(p => p.showInAbout === true || p.showInAbout === 'TRUE')
+    .sort((a, b) => b.year - a.year)
+    .forEach(p => {
+      const key = p.venue;
+      if (!venueMap[key]) venueMap[key] = { venue: p.venue, venueHe: p.venueHe, titles: [], titlesHe: [], maxYear: 0 };
+      venueMap[key].titles.push(p.title);
+      venueMap[key].titlesHe.push(p.titleHe);
+      if (p.year > venueMap[key].maxYear) venueMap[key].maxYear = p.year;
+    });
+
+  const groups = Object.values(venueMap).sort((a, b) => b.maxYear - a.maxYear);
+
+  const prodParts = groups.map(g => ({
+    titles: isHe ? g.titlesHe : g.titles,
+    venue: isHe ? (g.venueHe || g.venue) : g.venue
+  }));
+
+  const name = isHe ? 'ניב מנור' : 'Niv Manor';
+  const subtitle = isHe ? 'עיצוב תיאטרון' : 'Theater Design';
+  const bioText = isHe
+    ? 'ניב מנור הוא מעצב תיאטרון המתגורר בתל אביב. בוגר החוג לאמנות התיאטרון באוניברסיטת תל אביב, הוא יוצר עולמות על הבמה מזה למעלה משני עשורים בתיאטרון ובאופרה, לצד כמה מהבמאים המובילים בישראל — ממחזות קאמריים, דרך מחזורת זמר והפקות אופרה.'
+    : "Niv Manor is a theater designer based in Tel Aviv. A graduate of the Department of Theater Arts at Tel Aviv University, he has been creating worlds on stage for over two decades in theater and opera, alongside some of Israel's leading directors — from intimate chamber plays to musical theater and large-scale opera productions.";
+  const prodPrefix = isHe ? 'בין ההפקות שעיצב: ' : 'Among his productions: ';
+
+  // Build production runs
+  const prodRuns = [new TextRun({ text: prodPrefix, size: 24, font: 'Arial' })];
+  prodParts.forEach((g, i) => {
+    prodRuns.push(new TextRun({ text: g.titles.join(', '), size: 24, font: 'Arial', italics: true }));
+    prodRuns.push(new TextRun({ text: ` (${g.venue})${i < prodParts.length - 1 ? '; ' : '.'}`, size: 24, font: 'Arial' }));
+  });
+
+  const rtl = isHe;
+  const doc = new Document({
+    styles: { default: { document: { run: { font: 'Arial', size: 24 } } } },
+    sections: [{
+      properties: {
+        page: { size: { width: 11906, height: 16838 }, margin: { top: 1440, right: 1440, bottom: 1440, left: 1440 } }
+      },
+      children: [
+        new Paragraph({
+          bidirectional: rtl,
+          children: [new TextRun({ text: name, bold: true, size: 36, font: 'Arial' })],
+          spacing: { after: 60 }
+        }),
+        new Paragraph({
+          bidirectional: rtl,
+          children: [new TextRun({ text: subtitle, size: 22, color: '888888', font: 'Arial' })],
+          spacing: { after: 400 }
+        }),
+        new Paragraph({
+          bidirectional: rtl,
+          children: [new TextRun({ text: bioText, size: 24, font: 'Arial' })],
+          spacing: { after: 240 }
+        }),
+        new Paragraph({
+          bidirectional: rtl,
+          children: prodRuns,
+          spacing: { after: 400 }
+        }),
+        new Paragraph({
+          children: [new TextRun({ text: 'nivmanor@gmail.com  |  +972-52-3221243  |  www.nivmanor.com', size: 20, color: '888888', font: 'Arial' })]
+        }),
+      ]
+    }]
+  });
+
+  const buffer = await Packer.toBlob(doc);
+  const url = URL.createObjectURL(buffer);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `niv_manor_bio_${isHe ? 'he' : 'en'}.docx`;
+  a.click();
+  URL.revokeObjectURL(url);
+
+  btn.textContent = isHe ? '↓ הורד ביו' : '↓ Download Bio';
 }
 
 // init
