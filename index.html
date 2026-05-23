@@ -1228,11 +1228,9 @@ function renderProduction() {
   const t = i18n[lang];
   const isHe = lang === 'he';
 
-  // left column — title, venue, year
+  // left column — title, playwright, venue, year, director
   document.getElementById('prod-title').textContent = isHe ? p.titleHe : p.title;
-  const pwEl = document.getElementById('prod-playwright');
-  const pw = isHe ? (p.playwrightHe || p.playwright) : p.playwright;
-  pwEl.textContent = pw ? (isHe ? `מאת ${pw}` : `by ${pw}`) : '';
+  document.getElementById('prod-playwright').textContent = '';
 
   const directorVal = isHe ? (p.directorHe || p.director) : p.director;
   const venueStr = isHe ? (p.venueHe || p.venue) : p.venue;
@@ -1244,10 +1242,6 @@ function renderProduction() {
   leftHtml += `<div class="prod-year-line">${p.year}</div>`;
   if (directorVal) leftHtml += `<div class="prod-director-line">${isHe ? 'בימוי' : 'Director'}<span>${directorVal}</span></div>`;
   document.getElementById('prod-venue-year').innerHTML = leftHtml;
-
-  // update hidden elements (still needed for applyLang)
-  document.getElementById('prod-title').textContent = titleStr;
-  document.getElementById('prod-playwright').textContent = '';
 
   // clip button
   const clipBtn = document.getElementById('prod-clip-btn');
