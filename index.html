@@ -383,15 +383,15 @@
   /* info row — two tight columns, centered under image */
   .prod-info-row {
     display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 0.5rem;
+    grid-template-columns: minmax(auto, 220px) auto;
+    gap: 3rem;
     padding: 1.5rem 2.5rem 5rem;
     max-width: min(72vw, calc((100vh - 9rem) * 16 / 10 * 0.8));
     margin: 0 auto;
     align-items: start;
   }
 
-  body.rtl .prod-info-row { gap: 0.5rem; }
+  body.rtl .prod-info-row { gap: 2rem; }
 
   @media (max-width: 700px) {
     .prod-info-row { grid-template-columns: 1fr; max-width: 100%; }
