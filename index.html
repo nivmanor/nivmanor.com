@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="he" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Niv Manor · Theater Design</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Heebo:wght@300;400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #111110;
+    --white: #fafaf8;
+    --gray: #888884;
+    --light: #e8e8e4;
+    --font-serif: 'EB Garamond', Georgia, serif;
+    --font-sans: 'Heebo', system-ui, sans-serif;
+  }
+
+  html { font-size: 16px; }
+
+  body {
+    background: var(--white);
+    color: var(--black);
+    font-family: var(--font-sans);
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2.5rem;
+    background: var(--white);
+  }
+  nav.scrolled { }
+
+  .nav-logo {
+    font-family: var(--font-sans);
+    font-size: 1.1rem;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--black);
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gray);
+    text-decoration: none;
+    transition: color 0.2s;
+    cursor: pointer;
+  }
+  .nav-links a:hover, .nav-links a.active { color: var(--black); }
+
+  .lang-toggle {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gray);
+    cursor: pointer;
+    border: 1px solid var(--light);
+    background: none;
+    padding: 4px 10px;
+    border-radius: 2px;
+    font-family: var(--font-sans);
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .lang-toggle:hover { color: var(--black); border-color: var(--gray); }
+
+  /* RTL support */
+  body.rtl { direction: rtl; }
+  body.rtl .nav-logo { font-family: var(--font-sans); }
+  body.rtl .slide-label { left: auto; right: 1.5rem; }
+  body.rtl .hero-dots { justify-content: flex-start; }
+  body.rtl .work-item:nth-child(3n) { border-right: 0.5px solid var(--light); border-left: none; }
+  body.rtl .prod-meta-value { text-align: left; }
+  body.rtl .btn-back::before { content: '→'; }
+  body.rtl .production-sidebar { border-left: none; border-right: 1px solid var(--light); }
+  body.rtl .nav-links a { font-size: 0.85rem; letter-spacing: 0.05em; }
+  body.rtl .nav-logo { font-size: 1.35rem; letter-spacing: 0.02em; }
+  body.rtl #nav-subtitle { font-size: 0.72rem !important; letter-spacing: 0.06em !important; }
+  body.rtl .slide-label,
+  body.rtl .work-header h2,
+  body.rtl .prod-title,
+  body.rtl .prod-title-he,
+  body.rtl #page-about h2,
+  body.rtl #page-about p,
+  body.rtl .work-info-title { font-size: 0.72rem; letter-spacing: 0.04em; }
+  body.rtl .nav-logo { font-family: var(--font-sans) !important; font-style: normal; }
+
+  /* PAGES */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ── HOME PAGE ── */
+  #page-home.active {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5rem 4vw 4rem;
+  }
+
+  .hero-container {
+    width: 100%;
+    max-width: min(72vw, calc((100vh - 9rem) * 16 / 10 * 0.8));
+  }
+
+  .hero-frame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/10;
+    overflow: hidden;
+    background: var(--black);
+  }
+
+  .hero-slides {
+    position: absolute;
+    inset: 0;
+    display: flex;
+  }
+
+  .hero-slide {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    transform: translateX(0);
+    transition: transform 0.7s cubic-bezier(0.77, 0, 0.18, 1);
+    will-change: transform;
+  }
+
+  .hero-slide.state-current  { transform: translateX(0); z-index: 2; }
+  .hero-slide.state-incoming { transform: translateX(100%); z-index: 3; }
+  .hero-slide.state-outgoing { transform: translateX(-100%); z-index: 1; }
+  .hero-slide.state-hidden   { transform: translateX(100%); z-index: 0; }
+  .hero-slide.animating      { transition: transform 0.7s cubic-bezier(0.77, 0, 0.18, 1); }
+
+  .slide-1 { background: linear-gradient(135deg, #1a1410 0%, #2d2318 50%, #1a0e0a 100%); }
+  .slide-2 { background: linear-gradient(135deg, #0d1520 0%, #162030 50%, #0a1018 100%); }
+  .slide-3 { background: linear-gradient(135deg, #1a1218 0%, #251828 50%, #180d1a 100%); }
+  .slide-4 { background: linear-gradient(135deg, #141a10 0%, #1e2818 50%, #0e180a 100%); }
+  .slide-5 { background: linear-gradient(135deg, #1a1410 0%, #28200e 50%, #1a1205 100%); }
+
+  .slide-label {
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-top: 0.7rem;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.5s 0.4s, transform 0.5s 0.4s;
+    text-align: left;
+  }
+  .slide-label.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  body.rtl .slide-label { text-align: right; }
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  .hero-dots {
+    display: flex;
+    gap: 8px;
+    margin-top: 1rem;
+    justify-content: flex-end;
+  }
+
+  .hero-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--light);
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  .hero-dot.active { background: var(--black); }
+
+  /* ── WORK PAGE ── */
+  #page-work { padding-top: 5rem; }
+
+  .work-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem 2.5rem;
+    padding: 2.5rem 2.5rem 4rem;
+    background: var(--white);
+    align-items: flex-start;
+  }
+
+  .work-item {
+    cursor: pointer;
+    width: 220px;
+    flex-shrink: 0;
+  }
+
+  .work-thumb {
+    width: 220px;
+    height: 148px;
+    overflow: hidden;
+    position: relative;
+    background: #1a1a18;
+  }
+
+  .work-thumb img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease;
+    filter: grayscale(10%);
+  }
+
+  .work-thumb-placeholder {
+    width: 100%; height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    color: rgba(255,255,255,0.07);
+    transition: transform 0.5s ease;
+  }
+
+  .work-item:hover .work-thumb img,
+  .work-item:hover .work-thumb-placeholder { transform: scale(1.04); }
+
+  .work-info-title {
+    font-family: var(--font-sans);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--black);
+    padding: 0.55rem 0 0.15rem;
+    line-height: 1.4;
+  }
+
+  .work-info-year {
+    font-family: var(--font-sans);
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    color: var(--gray);
+    padding-bottom: 0.2rem;
+  }
+
+  /* ── PRODUCTION DETAIL PAGE ── */
+  #page-production { padding-top: 5rem; }
+
+  .production-back {
+    padding: 1rem 2.5rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .btn-back {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gray);
+    transition: color 0.2s;
+    padding: 0;
+  }
+  .btn-back:hover { color: var(--black); }
+  .btn-back::before { content: '←  '; }
+  body.rtl .btn-back::before { content: ''; }
+  body.rtl .btn-back::after { content: '  →'; }
+
+  /* constrained image like home page */
+  .prod-image-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 0 2.5rem;
+  }
+
+  .gallery-main {
+    width: 100%;
+    max-width: min(72vw, calc((100vh - 9rem) * 16 / 10 * 0.8));
+    aspect-ratio: 16/9;
+    background: var(--white);
+    position: relative;
+    cursor: zoom-in;
+  }
+
+  .gallery-main img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  .gallery-main-placeholder {
+    width: 100%; height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5rem;
+    color: rgba(255,255,255,0.07);
+  }
+
+  /* thumb row + prev/next */
+  .gallery-nav-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.6rem 2.5rem;
+    max-width: min(72vw, calc((100vh - 9rem) * 16 / 10 * 0.8));
+    margin: 0 auto;
+  }
+
+  .gallery-thumbs {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .gallery-thumb-num {
+    font-family: var(--font-sans);
+    font-size: 0.65rem;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    padding: 2px 4px;
+    transition: color 0.2s;
+  }
+  .gallery-thumb-num:hover { color: var(--gray); }
+  .gallery-thumb-num.active { color: var(--black); font-weight: 500; }
+  .gallery-thumb-num:not(.active) { color: var(--gray); }
+
+  .prod-prev-next {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .btn-prod-nav {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gray);
+    transition: color 0.2s;
+    padding: 0;
+  }
+  .btn-prod-nav:hover { color: var(--black); }
+
+  /* info row — two tight columns, centered under image */
+  .prod-info-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 3rem;
+    padding: 2rem 2.5rem 5rem;
+    max-width: min(72vw, calc((100vh - 9rem) * 16 / 10 * 0.8));
+    margin: 0 auto;
+    align-items: start;
+  }
+
+  body.rtl .prod-info-row { gap: 0.5rem; }
+
+  @media (max-width: 700px) {
+    .prod-info-row { grid-template-columns: 1fr; max-width: 100%; }
+    .gallery-main { max-width: 100%; }
+    .gallery-nav-row { max-width: 100%; }
+  }
+
+  .prod-left { }
+
+  .prod-title-large {
+    font-family: var(--font-sans);
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1.05;
+    color: var(--black);
+    margin-bottom: 0.5rem;
+  }
+
+  body.rtl .prod-title-large {
+    font-size: clamp(1.8rem, 3.5vw, 3rem);
+    letter-spacing: 0.01em;
+  }
+
+  .prod-playwright {
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--gray);
+    margin-bottom: 1rem;
+    letter-spacing: 0.02em;
+  }
+
+  .prod-venue-year {
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--black);
+    line-height: 2;
+  }
+
+  .btn-clip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.9rem;
+    background: none;
+    border: 1px solid var(--light);
+    padding: 5px 14px;
+    font-family: var(--font-sans);
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gray);
+    cursor: pointer;
+    border-radius: 2px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .btn-clip:hover { color: var(--black); border-color: var(--gray); }
+  .btn-clip::before { content: '▶'; font-size: 0.55rem; }
+
+  /* clip modal */
+  .clip-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.92);
+    z-index: 600;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .clip-modal.open { display: flex; }
+
+  .clip-inner {
+    width: min(860px, 90vw);
+    aspect-ratio: 16/9;
+    position: relative;
+    cursor: default;
+  }
+
+  .clip-inner iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  .clip-close {
+    position: absolute;
+    top: -2rem;
+    right: 0;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.5);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    transition: color 0.2s;
+  }
+  .clip-close:hover { color: white; }
+
+  .prod-desc {
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    line-height: 1.85;
+    color: var(--gray);
+    margin-top: 1.5rem;
+  }
+
+  .prod-meta { min-width: 180px; }
+
+  .prod-meta-row { margin-bottom: 1.4rem; }
+
+  .prod-meta-label {
+    font-family: var(--font-sans);
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gray);
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+
+  .prod-meta-value {
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    color: var(--black);
+    letter-spacing: 0.01em;
+  }
+
+  /* lightbox */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 500;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: zoom-out;
+  }
+  .lightbox.open { display: flex; }
+
+  .lightbox-inner {
+    max-width: 92vw;
+    max-height: 88vh;
+    position: relative;
+  }
+
+  .lightbox-placeholder {
+    width: 80vw;
+    aspect-ratio: 16/9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8rem;
+    color: rgba(255,255,255,0.1);
+  }
+
+  .lightbox-close {
+    position: absolute;
+    top: -2rem;
+    right: 0;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.5);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    transition: color 0.2s;
+  }
+  .lightbox-close:hover { color: white; }
+
+  .lightbox-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.5);
+    font-size: 2rem;
+    cursor: pointer;
+    padding: 1rem;
+    transition: color 0.2s;
+    z-index: 10;
+    line-height: 1;
+  }
+  .lightbox-arrow:hover { color: white; }
+  .lightbox-prev { left: -3.5rem; }
+  .lightbox-next { right: -3.5rem; }
+
+  /* ── ABOUT PAGE ── */
+  #page-about {
+    padding-top: 6rem;
+    max-width: 680px;
+    margin: 0 auto;
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+    padding-bottom: 6rem;
+  }
+
+  #page-about h2 {
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    font-weight: 400;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--light);
+  }
+
+  #page-about p {
+    font-size: 1rem;
+    line-height: 1.85;
+    margin-bottom: 1.5rem;
+    color: #333;
+  }
+
+  .about-contact {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--light);
+    font-size: 0.8rem;
+    color: var(--gray);
+    letter-spacing: 0.05em;
+  }
+
+  .about-contact a {
+    color: var(--black);
+    text-decoration: none;
+    border-bottom: 1px solid var(--light);
+    transition: border-color 0.2s;
+  }
+  .about-contact a:hover { border-bottom-color: var(--black); }
+
+  /* contact bar */
+  .contact-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 100;
+    background: var(--white);
+    padding: 0.7rem 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    color: var(--gray);
+    font-family: var(--font-sans);
+  }
+
+  .contact-bar-label {
+    color: var(--gray);
+    font-weight: 400;
+    text-transform: uppercase;
+    margin-right: 0.5rem;
+  }
+
+  body.rtl .contact-bar-label { margin-right: 0; margin-left: 0.5rem; }
+
+  .contact-bar a {
+    color: var(--gray);
+    text-decoration: none;
+    transition: color 0.2s;
+    text-transform: none;
+    letter-spacing: 0.02em;
+  }
+  .contact-bar a:hover { color: var(--black); }
+
+  .contact-bar-sep { color: var(--light); }
+
+  /* push page content up so fixed bar doesn't overlap */
+  body { padding-bottom: 3rem; }
+
+  /* footer */
+  footer {
+    padding: 1.5rem 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gray);
+  }
+</style>
+<script type="text/javascript" nonce="ab714f31323a4896ad059cdfe83" src="//local.adguard.org?ts=1779447843408&amp;type=content-script&amp;dmn=gorgeous-nougat-f814a3.netlify.app&amp;url=https%3A%2F%2Fgorgeous-nougat-f814a3.netlify.app%2F&amp;app=com.apple.Safari&amp;css=3&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1"></script><script type="text/javascript" nonce="ab714f31323a4896ad059cdfe83" src="//local.adguard.org?ts=1779447843408&amp;name=AdGuard%20Extra&amp;type=user-script"></script></head>
+<body>
+
+<nav id="main-nav">
+  <div style="display:flex; align-items:baseline; gap:0.6rem;">
+    <a class="nav-logo" onclick="showPage('home')" id="nav-logo-text">Niv Manor</a>
+    <span id="nav-subtitle" style="font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--gray); font-family:var(--font-sans);">Theater Design</span>
+  </div>
+  <div style="display:flex; align-items:center; gap:1.5rem;">
+    <ul class="nav-links">
+      <li><a onclick="showPage('home')" class="active" id="nav-home" data-en="Home" data-he="בית">Home</a></li>
+      <li><a onclick="showPage('work')" id="nav-work" data-en="Work" data-he="עבודות">Work</a></li>
+      <li><a onclick="showPage('about')" id="nav-about" data-en="About" data-he="אודות">About</a></li>
+    </ul>
+    <button class="lang-toggle" id="lang-btn" onclick="toggleLang()">עב</button>
+  </div>
+</nav>
+
+<div class="contact-bar">
+  <span class="contact-bar-label" id="contact-label">Contact me:</span>
+  <a href="mailto:nivmanor@gmail.com">nivmanor@gmail.com</a>
+  <span class="contact-bar-sep">|</span>
+  <a href="tel:+972523221243" id="phone-en">+972-52-3221243</a>
+  <a href="tel:+972523221243" id="phone-he" style="display:none;">052-3221243</a>
+</div>
+
+<!-- ══ HOME PAGE ══ -->
+<div id="page-home" class="page active">
+  <div class="hero-container">
+    <div class="hero-frame" onclick="showPage('work')" style="cursor:pointer;">
+      <div class="hero-slides"></div>
+    </div>
+    <div class="hero-dots"></div>
+  </div>
+</div>
+
+<!-- ══ WORK PAGE ══ -->
+<div id="page-work" class="page">
+  <div class="work-grid" id="work-grid"></div>
+</div>
+
+<!-- ══ PRODUCTION DETAIL PAGE ══ -->
+<div id="page-production" class="page">
+  <div class="production-back">
+    <button class="btn-back" id="btn-back-work" onclick="showPage('work')" data-en="All Work" data-he="כל העבודות">All Work</button>
+  </div>
+  <div class="prod-image-wrap">
+    <div class="gallery-main" id="gallery-main">
+      <div class="gallery-main-placeholder" id="gallery-placeholder"></div>
+    </div>
+  </div>
+  <div class="gallery-nav-row">
+    <div class="gallery-thumbs" id="gallery-thumbs"></div>
+    <div class="prod-prev-next">
+      <button class="btn-prod-nav" id="btn-prev-img" onclick="navigateImg(-1)">Previous</button>
+      <button class="btn-prod-nav" id="btn-next-img" onclick="navigateImg(1)">Next</button>
+    </div>
+  </div>
+  <div class="prod-info-row">
+    <div class="prod-left">
+      <div class="prod-title-large" id="prod-title"></div>
+      <div class="prod-playwright" id="prod-playwright"></div>
+      <div class="prod-venue-year" id="prod-venue-year"></div>
+      <button class="btn-clip" id="prod-clip-btn" style="display:none;"></button>
+      <div class="prod-desc" id="prod-desc"></div>
+    </div>
+    <div class="prod-meta" id="prod-meta"></div>
+  </div>
+</div>
+
+<!-- ══ ABOUT PAGE ══ -->
+<div id="page-about" class="page">
+  <h2 data-en="About" data-he="אודות">About</h2>
+  <div id="about-en">
+    <p>Niv Manor is a set and costume designer based in Tel Aviv. A graduate of the Department of Theatre Arts at Tel Aviv University, he has been creating worlds on stage for over two decades — working across theatre, opera, and dance with some of Israel's most celebrated directors and institutions.</p>
+    <p>His work spans the Israeli Opera, Habima National Theatre, Cameri Theatre, Gesher Theatre, Beit Lessin Theatre, Be'er Sheva Theatre, and Haifa Theatre — from intimate chamber plays to large-scale opera productions.</p>
+    <p>Recent work includes: <em>Nabucco, Orfeo and Euridice, Tosca, Madama Butterfly, The Abduction from the Seraglio, The Magic Flute</em> (Israeli Opera); <em>Who's Afraid of Virginia Woolf?, Alone in Berlin, Dangerous Liaisons, Yehu</em> (Habima); <em>A Chorus Line, Saving Lives, Krum</em> (Cameri); <em>The Kite Runner, Animal Farm</em> (Gesher).</p>
+  </div>
+  <div id="about-he" style="display:none;">
+    <p>ניב מנור הוא מעצב תיאטרון המתגורר בתל אביב. בוגר החוג לאמנות התיאטרון באוניברסיטת תל אביב, הוא יוצר עולמות על הבמה מזה למעלה משני עשורים — בתיאטרון, אופרה ומחול, לצד כמה מהבמאים והמוסדות המובילים בישראל.</p>
+    <p>עבודותיו נפרשות על האופרה הישראלית, תיאטרון הבימה, התיאטרון הקאמרי, תיאטרון גשר, בית ליסין, תיאטרון באר שבע ותיאטרון חיפה — ממחזות קאמריים אינטימיים ועד הפקות אופרה מרהיבות.</p>
+    <p>מבין ההפקות האחרונות: <em>נבוקו, אורפיאו ואאורידיצ׳ה, טוסקה, מאדאם בטרפליי, החטיפה מההרמון, חליל הקסם</em> (האופרה הישראלית); <em>מי מפחד מווירג׳יניה וולף?, לבד בברלין, יחסים מסוכנים, יהוא</em> (הבימה); <em>שורת המקהלה, פיקוח נפש, קרום</em> (הקאמרי); <em>רודף העפיפונים, חוות החיות</em> (גשר).</p>
+  </div>
+  <div class="about-contact">
+    <p>Contact: <a href="mailto:nivmanor@gmail.com">nivmanor@gmail.com</a> &nbsp;·&nbsp; <a href="tel:+972523221243">+972-052-3221243</a></p>
+  </div>
+  <footer style="margin: 4rem -2.5rem 0; padding: 1.5rem 2.5rem;">
+    <span>© 2025 Niv Manor</span>
+    <span>Tel Aviv</span>
+  </footer>
+</div>
+
+<script>
+// ══ DATA ══
+const productions = [
+  { id: 1,  year: 2022, title: "A Couple", titleHe: "זוּג", venue: "Beit Lessin Theatre", venueHe: "תיאטרון בית ליסין", emoji: "🌿", playwright: "Edna Mazya", playwrightHe: "עדנה מזי״א", director: "Ilan Ronen", directorHe: "אילן רונן", costume: "Aviah Bash", costumeHe: "אביה בש", lighting: "Nadav Barnea", lightingHe: "נדב ברנע", desc: "", clipUrl: "", mainImage: "images/a couple/a5f151_9d5a587278414b1bb4c42c91b33e3d9c~mv2.jpeg",
+  images: [
+    "images/a couple/a5f151_9d5a587278414b1bb4c42c91b33e3d9c~mv2.jpeg",
+    "images/a couple/a5f151_cd164976cbe045c992e7153647174289~mv2.jpg",
+    "images/a couple/a5f151_30346ad45b684ab5a56194df01d8eb79~mv2.jpeg",
+    "images/a couple/a5f151_b41d1cdcd89e4c6e9f76ac44595e7470~mv2.jpg",
+    "images/a couple/a5f151_40a432a8aae24d5e8e70db3882dc6fe0~mv2.jpeg",
+    "images/a couple/a5f151_1e2e4778a5a24ba097d9a6f1afa6ac3d~mv2.jpeg",
+    "images/a couple/a5f151_d54f84923b964b43bd4843328a93220d~mv2.jpg",
+    "images/a couple/a5f151_0440ca51eac7438da95bacfa7b4fb1bc~mv2.jpeg",
+  ]},
+  { id: 2,  year: 2022, title: "Games in the Backyard", titleHe: "משחקים בחצר האחורית", venue: "Beit Lessin Theatre", venueHe: "תיאטרון בית ליסין", emoji: "🏚", playwright: "Edna Mazya", playwrightHe: "עדנה מזי״א", director: "Ido Rosenberg", directorHe: "עידו רוזנברג", costume: "Rene Gliksman & Limka", costumeHe: "רנה גליקסמן ולימקה", lighting: "Keren Granek", lightingHe: "קרן גרנק", desc: "", clipUrl: "https://www.youtube.com/watch?v=uxoRmXD-F4w", mainImage: "images/Games in the backyard/a5f151_ff0e5c658bf645798cdda0d4092bd0da~mv2.jpg",
+  images: [
+    "images/Games in the backyard/a5f151_ff0e5c658bf645798cdda0d4092bd0da~mv2.jpg",
+    "images/Games in the backyard/a5f151_e14dd6daae9e4335acc25f82112dcdfa~mv2.jpg",
+    "images/Games in the backyard/a5f151_3b377a7eb0ff46b99466909d073fd3b9~mv2.jpg",
+    "images/Games in the backyard/a5f151_ff1f919296c445308703bb7da0e746ac~mv2.jpg",
+    "images/Games in the backyard/a5f151_cf34dd2aa61945e5ad2db30c992b325f~mv2.jpg",
+    "images/Games in the backyard/a5f151_ee1195a4670448c69a735aa7ff401694~mv2.jpg",
+    "images/Games in the backyard/a5f151_3f7d823cf72041a8be64bbe9bc5298e8~mv2.jpg",
+    "images/Games in the backyard/a5f151_2631da7dabe74b5d948b9138a02b12b9~mv2.jpg",
+  ]},
+  { id: 3,  year: 2022, title: "Saving Lives", titleHe: "פיקוח נפש", venue: "Cameri Theatre", venueHe: "תיאטרון הקאמרי", emoji: "🏥", playwright: "Tomer Rosenman", playwrightHe: "תומר רוזנמן", director: "Hada Galron", directorHe: "הדר גלרון", costume: "Orna Smorgonski", costumeHe: "אורנה סמורגונסקי", lighting: "Uri Morag", lightingHe: "אורי מורג", desc: "", clipUrl: "", mainImage: "images/saving lives/a5f151_d51cbb482af94952ae7f53b7ad24fcd7~mv2.jpeg",
+  images: [
+    "images/saving lives/a5f151_d51cbb482af94952ae7f53b7ad24fcd7~mv2.jpeg",
+    "images/saving lives/a5f151_1df8c9d6def648ad9949c598a66e95d1~mv2.jpeg",
+    "images/saving lives/a5f151_d8aa1e68a74a4c9a966f88cba73e2677~mv2.jpg",
+    "images/saving lives/a5f151_b4a4f9b254304a82939728a5d9de0429~mv2.jpeg",
+    "images/saving lives/a5f151_82cabcd4f8a144b9a9dc220fa94571af~mv2.jpg",
+    "images/saving lives/a5f151_e493c4306cca4dd5bc3171a46607119c~mv2.jpeg",
+    "images/saving lives/a5f151_42d0c36f22e848b99291a1666591adc7~mv2.jpg",
+  ]},
+  { id: 4,  year: 2018, title: "A Chorus Line", titleHe: "שורת המקהלה", venue: "Cameri Theatre", venueHe: "תיאטרון הקאמרי", emoji: "💃", playwright: "James Kirkwood Jr. and Nicholas Dante", playwrightHe: "ג׳יימס קירקווד ג׳וניור וניקולס דנטה", director: "Tsedi Tsarfati", directorHe: "צדי צרפתי", costume: "Yuval Kaspin", costumeHe: "יובל כספין", lighting: "Keren Granek", lightingHe: "קרן גרנק", desc: "", clipUrl: "", mainImage: "images/a chorus line/a5f151_faf0819d7fab454694fc6283166c5556~mv2.jpeg",
+  images: [
+    "images/a chorus line/a5f151_faf0819d7fab454694fc6283166c5556~mv2.jpeg",
+    "images/a chorus line/a5f151_34d3aa9fe87744cd88866c4526f2df84~mv2.jpg",
+    "images/a chorus line/a5f151_2b5a7c616e834e3898ffb0d61740c918~mv2.jpg",
+    "images/a chorus line/a5f151_1847449db59246feac1382f168885736~mv2.jpg",
+    "images/a chorus line/a5f151_79e326ba79694c889ff216d8541b0bcb~mv2.jpeg",
+    "images/a chorus line/a5f151_ed13c43bf7124d1995b0463118c7500e~mv2.jpg",
+    "images/a chorus line/a5f151_2f20acfd384f41f3a640a0f5e21441c8~mv2.jpg",
+    "images/a chorus line/a5f151_9259089113b04d70b3eea87cf99fff05~mv2.jpeg",
+    "images/a chorus line/a5f151_8f034d871f0649d0ba52f1fba88306b2~mv2.jpg",
+  ]},
+  { id: 5,  year: 2018, title: "The Magic Flute", titleHe: "חליל הקסם", venue: "The Israeli Opera", venueHe: "האופרה הישראלית", emoji: "🎶", playwright: "Mozart", playwrightHe: "מוצרט", director: "Shirit Lee-Weiss", directorHe: "שירית לי-ווייס", costume: "Ula Shevtzov", costumeHe: "אולה שבצוב", lighting: "Ziv Voloshin", lightingHe: "זיו וולושין", desc: "", clipUrl: "", mainImage: "images/the magic flute/a5f151_1d025231f58b4a159bbe38015edf3edf~mv2.jpg",
+  images: [
+    "images/the magic flute/a5f151_1d025231f58b4a159bbe38015edf3edf~mv2.jpg",
+    "images/the magic flute/a5f151_969e5f8713454ff299c3bfe8d4140ec4~mv2.jpg",
+    "images/the magic flute/a5f151_6d10572ec9b54c80941c1f55f76b248f~mv2.jpg",
+    "images/the magic flute/a5f151_7c9a6d29aadb4d72bc6b1bd2af596540~mv2.jpg",
+    "images/the magic flute/a5f151_0c5b3a19bd5f4ac683041cfac88fb1c7~mv2.jpg",
+    "images/the magic flute/a5f151_4886fc4ac9b240d6a8eebb8af4840db7~mv2.jpg",
+    "images/the magic flute/a5f151_7fc1891584814253863e440c25dac308~mv2.jpg",
+    "images/the magic flute/a5f151_17bcb00233054e3b941cd0fabc13f195~mv2.jpg",
+  ]},
+  { id: 6,  year: 2018, title: "Who's Afraid of Virginia Woolf?", titleHe: "מי מפחד מווירג׳יניה וולף?", venue: "Habima National Theatre", venueHe: "תיאטרון הבימה", emoji: "🌑", playwright: "Edward Albee", playwrightHe: "אדוארד אלבי", director: "Ilan Ronen", directorHe: "אילן רונן", costume: "Yelena Kerlich", costumeHe: "ילנה קרליך", lighting: "Meir Alon", lightingHe: "מאיר אלון", desc: "", clipUrl: "", mainImage: "images/Who's Afraid of Virginia Woolf/a5f151_ea7622b7e5f245f99655ff1eebf4aed6~mv2.jpg",
+  images: [
+    "images/Who's Afraid of Virginia Woolf/a5f151_ea7622b7e5f245f99655ff1eebf4aed6~mv2.jpg",
+    "images/Who's Afraid of Virginia Woolf/a5f151_a98910d89a1f43638848f391215c7c9f~mv2.jpg",
+    "images/Who's Afraid of Virginia Woolf/a5f151_44b4921b0b8e49d0929f54dd5cede9e1~mv2.jpg",
+    "images/Who's Afraid of Virginia Woolf/a5f151_5a8a42ca715a405e81c3da7c09e9da6a~mv2.jpg",
+    "images/Who's Afraid of Virginia Woolf/a5f151_37744f3341a3435db7bc1dfd33f5d619~mv2.jpg",
+    "images/Who's Afraid of Virginia Woolf/a5f151_0d707ec7c6b94dc5aa4c8dbb9065f5ca~mv2.jpg",
+    "images/Who's Afraid of Virginia Woolf/a5f151_1f2df0fe40f9454fb0c02ea1e8f29276~mv2.jpg",
+    "images/Who's Afraid of Virginia Woolf/a5f151_7697fa1c807b4948b92ee9f5e34daaa6~mv2.jpg",
+  ]},
+  { id: 7,  year: 2018, title: "The Kite Runner", titleHe: "רודף העפיפונים", venue: "Gesher Theatre", venueHe: "תיאטרון גשר", emoji: "🪁", playwright: "Matthew Spangler after Khaled Hosseini", playwrightHe: "מת׳יו ספנגלר עפ״י חאלד חוסייני", director: "Noam Shmuel", directorHe: "נועם שמואל", costume: "Avia Bash", costumeHe: "אביה בש", lighting: "Alexander Sikirin", lightingHe: "אלכסנדר סיקירין", desc: "", clipUrl: "", mainImage: "images/the kite runner/a5f151_7013f7d2a1d648cf92426ee6c74ee165~mv2.jpg",
+  images: [
+    "images/the kite runner/a5f151_7013f7d2a1d648cf92426ee6c74ee165~mv2.jpg",
+    "images/the kite runner/a5f151_a91f5efe9944478a9150b784b2c2de27~mv2.jpg",
+    "images/the kite runner/a5f151_2b8e42f9c0074e10b43039b0c83ee3da~mv2.jpg",
+    "images/the kite runner/a5f151_cda18f9c8a7542a1aaff0a2035af4a25~mv2.jpg",
+    "images/the kite runner/a5f151_5cc94b8620b64e59ac8a2c8971b7bbc6~mv2.jpg",
+    "images/the kite runner/a5f151_2d252a90cb7d4d93a706617ace8ae820~mv2.jpg",
+    "images/the kite runner/a5f151_bcd23b29b56445d9bde0199d459ed984~mv2.jpg",
+    "images/the kite runner/a5f151_8a708f9cf7d145599daec6d163a0f517~mv2.jpg",
+  ]},
+  { id: 8,  year: 2017, title: "Orfeo and Euridice", titleHe: "אורפיאו ואאורידיצ׳ה", venue: "The Israeli Opera & The Macao Music Festival", venueHe: "האופרה הישראלית בשיתוף פסטיבל המוזיקה של מקאו", emoji: "🎻", playwright: "Gluck", playwrightHe: "גלוק", director: "Yulia Pevzner", directorHe: "יוליה פבזנר", costume: "", costumeHe: "", lighting: "Uri Morag", lightingHe: "אורי מורג", desc: "", clipUrl: "", mainImage: "images/Orfeo and Euridice/a5f151_ce01c93d59f94aa782f3aef838e188ae~mv2.jpg",
+  images: [
+    "images/Orfeo and Euridice/a5f151_ce01c93d59f94aa782f3aef838e188ae~mv2.jpg",
+    "images/Orfeo and Euridice/a5f151_56b0b044fd8d42ddb3f88b9a011be7da~mv2.jpg",
+    "images/Orfeo and Euridice/a5f151_646ec2c38fe14b799e596fbe897c23f1~mv2.jpg",
+    "images/Orfeo and Euridice/a5f151_6133a197af3b4916b590f563a387f2bb~mv2.jpg",
+    "images/Orfeo and Euridice/a5f151_7c7266de3a55450bb1a57056c7d054f1~mv2.jpg",
+    "images/Orfeo and Euridice/a5f151_8cc6eb9c0a6147a98dad1a9bb092b649~mv2.jpg",
+    "images/Orfeo and Euridice/a5f151_fb4b40f3607645b1b70039352a8cfb87~mv2.jpg",
+    "images/Orfeo and Euridice/a5f151_7c78054d0eae4e418db4e914d10c3bff~mv2.jpg",
+  ]},
+  { id: 9,  year: 2017, title: "Tosca", titleHe: "טוסקה", venue: "The Israeli Opera", venueHe: "האופרה הישראלית", emoji: "🌹", playwright: "Puccini", playwrightHe: "פוצ׳יני", director: "Gadi Schechter", directorHe: "גדי שכטר", costume: "", costumeHe: "", lighting: "Uri Morag", lightingHe: "אורי מורג", desc: "", clipUrl: "", mainImage: "images/tosca/a5f151_c3f9838235f447e0b9bfcd821657fa26~mv2.jpg",
+  images: [
+    "images/tosca/a5f151_c3f9838235f447e0b9bfcd821657fa26~mv2.jpg",
+    "images/tosca/a5f151_419f5e02a86c4393b4f7d2783454b7d6~mv2.jpg",
+    "images/tosca/a5f151_2efa09b80c9e4a79bbb8832490188c59~mv2.jpg",
+    "images/tosca/a5f151_c3868ef6ac5a4f20aff80009e39b2e22~mv2.jpg",
+    "images/tosca/a5f151_4406be022c69461d9fc36a630e8bfbf4~mv2.jpg",
+    "images/tosca/a5f151_0284e8988f0c41ae873343e6193132f1~mv2.jpg",
+    "images/tosca/a5f151_c39a093813d0483da287bf0b88b0e276~mv2.jpg",
+    "images/tosca/a5f151_839701b8f50e4c06ae4045e43186460d~mv2.jpg",
+  ]},
+  { id: 10, year: 2016, title: "Madama Butterfly", titleHe: "מאדאם בטרפליי", venue: "The Israeli Opera", venueHe: "האופרה הישראלית", emoji: "🦋", playwright: "Puccini", playwrightHe: "פוצ׳יני", director: "Gadi Schechter", directorHe: "גדי שכטר", costume: "", costumeHe: "", lighting: "Uri Morag", lightingHe: "אורי מורג", desc: "", clipUrl: "", mainImage: "images/madama butterfly/a5f151_a67787f700b7462190c98c7a705a8245~mv2.jpg",
+  images: [
+    "images/madama butterfly/a5f151_a67787f700b7462190c98c7a705a8245~mv2.jpg",
+    "images/madama butterfly/a5f151_cc0230d473eb4a098551f8fa46d2d5b4~mv2.jpg",
+    "images/madama butterfly/a5f151_42fd651b402a4bd9891df71f7ae58dc3~mv2.jpg",
+    "images/madama butterfly/a5f151_66c4ee2520e24cb49a86c8569e34018f~mv2.jpg",
+    "images/madama butterfly/a5f151_526efa1e0ec44d3191513e30c48b1b50~mv2.jpg",
+    "images/madama butterfly/a5f151_274fa4f5c6e84f249af48733439462f0~mv2.jpg",
+    "images/madama butterfly/a5f151_0b6c9019d4624459ac746957f6cab9c0~mv2.jpg",
+    "images/madama butterfly/a5f151_5a09afdf85ae4ff18f805abf5b70c2c0~mv2.jpg",
+  ]},
+  { id: 11, year: 2016, title: "The Abduction from the Seraglio", titleHe: "החטיפה מההרמון", venue: "The Israeli Opera", venueHe: "האופרה הישראלית", emoji: "🕌", playwright: "Mozart", playwrightHe: "מוצרט", director: "Shirit Lee-Weiss", directorHe: "שירית לי-וייס", costume: "Natasha Tuchman-Polyak", costumeHe: "נטשה טוכמן-פוליאק", lighting: "Uri Morag", lightingHe: "אורי מורג", desc: "", clipUrl: "", mainImage: "images/the abduction from the seraglio/a5f151_6db4ecbe21184c4ea61abb7343de41a1~mv2.jpg",
+  images: [
+    "images/the abduction from the seraglio/a5f151_6db4ecbe21184c4ea61abb7343de41a1~mv2.jpg",
+    "images/the abduction from the seraglio/a5f151_1e8c66f9aad24a8a8bf483c4f05bb2dd~mv2.jpg",
+    "images/the abduction from the seraglio/a5f151_04947b8e4f674b638da2b9e6e641894d~mv2.jpg",
+    "images/the abduction from the seraglio/a5f151_963dc50171484f8ca202a78ac5e27682~mv2.jpg",
+    "images/the abduction from the seraglio/a5f151_eecea6e1271f4a41b7d5222b7576f876~mv2.jpg",
+    "images/the abduction from the seraglio/a5f151_390498269559443b9ede4b975cb7af2c~mv2.jpg",
+    "images/the abduction from the seraglio/a5f151_22403a502f804c96bc80af2ccf9763b3~mv2.jpg",
+  ]},
+  { id: 12, year: 2016, title: "Alone in Berlin", titleHe: "לבד בברלין", venue: "Habima National Theatre", venueHe: "תיאטרון הבימה", emoji: "🏙", playwright: "Shachar Pinkas after Hans Fallada", playwrightHe: "שחר פנקס על פי האנס פאלאדה", director: "Ilan Ronen", directorHe: "אילן רונן", costume: "Ula Shevtzov", costumeHe: "אולה שבצוב", lighting: "Ziv Voloshin", lightingHe: "זיו וולושין", desc: "", clipUrl: "", mainImage: "images/alone in berlin/a5f151_ea8a95d3649f477eb2d41f0dfedce83a~mv2.jpg",
+  images: [
+    "images/alone in berlin/a5f151_ea8a95d3649f477eb2d41f0dfedce83a~mv2.jpg",
+    "images/alone in berlin/a5f151_953b44cb29714783acb2d011705af0f8~mv2.jpg",
+    "images/alone in berlin/a5f151_a39d48952a2e455bae2f786db7264296~mv2.jpg",
+    "images/alone in berlin/a5f151_9b79c83690684886865d5d09fcec1e87~mv2.jpg",
+    "images/alone in berlin/a5f151_6d80d33d6144427fafe2c35adf0867ca~mv2.jpg",
+    "images/alone in berlin/a5f151_3af98bdbd39549a9a5e118363c465077~mv2.jpg",
+    "images/alone in berlin/a5f151_c708dd41182d4307b98a1616bfdddfd9~mv2.jpg",
+    "images/alone in berlin/a5f151_19e378ea108a4a6bba5f590f94d7a2b8~mv2.jpg",
+  ]},
+  { id: 13, year: 2015, title: "Dangerous Liaisons", titleHe: "יחסים מסוכנים", venue: "Habima National Theatre", venueHe: "תיאטרון הבימה", emoji: "🃏", playwright: "Christopher Hampton", playwrightHe: "כריסטופר המפטון", director: "Ilan Ronen", directorHe: "אילן רונן", costume: "Ula Shevtzov", costumeHe: "אולה שבצוב", lighting: "Ziv Voloshin", lightingHe: "זיו וולושין", desc: "", clipUrl: "", mainImage: "images/dangerous liaisons/a5f151_1ba638f82e724d94b27b073c32d861d1.jpg",
+  images: [
+    "images/dangerous liaisons/a5f151_1ba638f82e724d94b27b073c32d861d1.jpg",
+    "images/dangerous liaisons/a5f151_f0d20fd6d727410da65d5da138076dae.jpg",
+    "images/dangerous liaisons/a5f151_b1731aad1d6f417fb03ef4b21a7b1a4a.jpg",
+    "images/dangerous liaisons/a5f151_1dc9a489cf1845bea12120e7a84d113b.jpg",
+    "images/dangerous liaisons/a5f151_43bfcaef3b474bb18a5d219b1567c0b9.jpg",
+    "images/dangerous liaisons/a5f151_376755d70a3f4a1b8999f774619dfa9c~mv2.jpg",
+    "images/dangerous liaisons/a5f151_edb26ba475f2487abae37bdd528667ab~mv2.jpg",
+    "images/dangerous liaisons/a5f151_c87c33b2cdb14238bd900d178cfa792a~mv2.jpg",
+  ]},
+  { id: 14, year: 2015, title: "Ten Minutes from Home", titleHe: "עשר דקות מהבית", venue: "Habima National Theatre", venueHe: "תיאטרון הבימה", emoji: "🕐", playwright: "Maya Arad", playwrightHe: "מאיה ערד", director: "Shay Pitovsky", directorHe: "שי פיטובסקי", costume: "Natasha Tuchman-Polyak", costumeHe: "נטשה טוכמן-פוליאק", lighting: "Ziv Voloshin", lightingHe: "זיו וולושין", desc: "", clipUrl: "", mainImage: "images/ten minutes from home/a5f151_5d708e2b75db4651938146784025ee2b.jpg",
+  images: [
+    "images/ten minutes from home/a5f151_5d708e2b75db4651938146784025ee2b.jpg",
+    "images/ten minutes from home/a5f151_cd41297d64f24fec9b37ab8096417403.jpg",
+    "images/ten minutes from home/a5f151_f24d7e2a5ec648c49bb1fa290d04c95a.jpg",
+    "images/ten minutes from home/a5f151_692a3a235b55464c820d5355b4983846.jpg",
+    "images/ten minutes from home/a5f151_7173018af83a48d9b34921563c096312.jpg",
+    "images/ten minutes from home/a5f151_74bebe75aa1b4d4b81b78ae2065f5212.jpg",
+    "images/ten minutes from home/a5f151_96069dc553a448b295b38f04149d7aee.jpg",
+  ]},
+  { id: 15, year: 2015, title: "Animal Farm", titleHe: "חוות החיות", venue: "Gesher Theatre", venueHe: "תיאטרון גשר", emoji: "🐷", playwright: "George Orwell adapted by Peter Hall", playwrightHe: "ג׳ורג׳ אורוול בעיבוד פיטר הול", director: "Noam Shmuel", directorHe: "נועם שמואל", costume: "Avia Bash", costumeHe: "אביה בש", lighting: "Ziv Voloshin", lightingHe: "זיו וולושין", desc: "", clipUrl: "", mainImage: "images/animal farm/a5f151_d450e616d9bd404e945f1d4ae31fc48d.jpg",
+  images: [
+    "images/animal farm/a5f151_d450e616d9bd404e945f1d4ae31fc48d.jpg",
+    "images/animal farm/a5f151_c9853bc16b14426aa8708627b81bb741.jpg",
+    "images/animal farm/a5f151_1ea7c14a8e234618bd25216f52b22190.jpg",
+    "images/animal farm/a5f151_a8a42fde79494785b9e094fc75af22ad.jpg",
+    "images/animal farm/a5f151_9e8d19b92dab491abee2137d46968426.jpg",
+    "images/animal farm/a5f151_8df7deaf70af4b2b950e524e60e5726c.jpg",
+    "images/animal farm/a5f151_5910ab3844a84249a708fd73135319ec.jpg",
+    "images/animal farm/a5f151_6e98c09408f34477a67ceaa8b39eb474.jpg",
+  ]},
+  { id: 16, year: 2015, title: "Yehu", titleHe: "יהוא", venue: "Habima National Theatre", venueHe: "תיאטרון הבימה", emoji: "⚔️", playwright: "Gilad Evron", playwrightHe: "גלעד עברון", director: "Ilan Ronen", directorHe: "אילן רונן", costume: "Natasha Tuchman-Polyak", costumeHe: "נטשה טוכמן-פוליאק", lighting: "Ziv Voloshin", lightingHe: "זיו וולושין", desc: "", clipUrl: "", mainImage: "images/yehu/a5f151_1775aae653ea4056ab57b9f379a0bbe1.jpg",
+  images: [
+    "images/yehu/a5f151_1775aae653ea4056ab57b9f379a0bbe1.jpg",
+    "images/yehu/a5f151_2a09835598554a33894b7ed1b1252634.jpg",
+    "images/yehu/a5f151_77034265521844ec97acaed2e22d613b.jpg",
+    "images/yehu/a5f151_314430bce42e447a9f2f82f4ad8f3330.jpg",
+    "images/yehu/a5f151_982bbf89c8b34abbb5ff8738e892d60d.jpg",
+    "images/yehu/a5f151_45101facfc904b1e910cb8e6956c413b.jpg",
+    "images/yehu/a5f151_39663a09fcd24cd2b71ef31413a8bd6d.jpg",
+  ]},
+  { id: 17, year: 2015, title: "Adventures of a Donkey That is All Pure", titleHe: "הרפתקאות חמור שכולו תכלת", venue: "Haifa Theatre", venueHe: "תיאטרון חיפה", emoji: "🫏", playwright: "Shay Pitovsky after Nachum Gutman", playwrightHe: "שי פיטובסקי על פי נחום גוטמן", director: "Shay Pitovsky", directorHe: "שי פיטובסקי", costume: "Natasha Tuchman-Polyak", costumeHe: "נטשה טוכמן-פוליאק", lighting: "Ziv Voloshin", lightingHe: "זיו וולושין", desc: "", clipUrl: "", mainImage: "images/adventures of a donkey that is all pure/a5f151_e06320f064af4df8abada8fb640fd345~mv2.jpg",
+  images: [
+    "images/adventures of a donkey that is all pure/a5f151_e06320f064af4df8abada8fb640fd345~mv2.jpg",
+    "images/adventures of a donkey that is all pure/a5f151_145135e11ec64b8fa1776d1042b7eb0e.jpg",
+    "images/adventures of a donkey that is all pure/a5f151_5a008100097148ab933bcbf62af84447.jpg",
+    "images/adventures of a donkey that is all pure/a5f151_962354463cc64e5cb35b6201f5ebcddf.jpg",
+    "images/adventures of a donkey that is all pure/a5f151_e78532456602477d94d9d517b07ff030.jpg",
+    "images/adventures of a donkey that is all pure/a5f151_7875d287c5ea460f8b57afd2116c7a08.jpg",
+  ]},
+  { id: 18, year: 2014, title: "God Waits at the Station", titleHe: "אלוהים מחכה בתחנה", venue: "Habima National Theatre", venueHe: "תיאטרון הבימה", emoji: "🚉", playwright: "Maya Arad", playwrightHe: "מאיה ערד", director: "Shay Pitovsky", directorHe: "שי פיטובסקי", costume: "Natasha Tuchman-Polyak", costumeHe: "נטשה טוכמן-פוליאק", lighting: "Ziv Voloshin", lightingHe: "זיו וולושין", desc: "", clipUrl: "", mainImage: "images/god waits at the station/a5f151_0b37b8001f184949af42bed89f8dc652.jpg",
+  images: [
+    "images/god waits at the station/a5f151_0b37b8001f184949af42bed89f8dc652.jpg",
+    "images/god waits at the station/a5f151_2ba94a3b91484889a27d73143fdcfef3.jpg",
+    "images/god waits at the station/a5f151_c2aca208af7d4bdca7677862ecb8cf10.jpg",
+    "images/god waits at the station/a5f151_058f1b1ba3354727a1f31e7f9fa0de89.jpg",
+    "images/god waits at the station/a5f151_672feb001c304735a40cd06b87e85def.jpg",
+    "images/god waits at the station/a5f151_284909aca2bb44a2995142cab106a425.jpg",
+    "images/god waits at the station/a5f151_37d254928d7a4da49a8d8fb843ba8673.jpg",
+  ]},
+  { id: 19, year: 2013, title: "The Oath", titleHe: "השבועה", venue: "Habima National Theatre", venueHe: "תיאטרון הבימה", emoji: "📜", playwright: "Shay Pitovsky", playwrightHe: "שי פיטובסקי", director: "Shay Pitovsky", directorHe: "שי פיטובסקי", costume: "Natasha Tuchman-Polyak", costumeHe: "נטשה טוכמן פוליאק", lighting: "Ziv Voloshin", lightingHe: "זיו וולושין", desc: "", clipUrl: "", mainImage: "images/the oath/a5f151_4f1c3401c9f94285a67f648b7eddc540.jpg",
+  images: [
+    "images/the oath/a5f151_4f1c3401c9f94285a67f648b7eddc540.jpg",
+    "images/the oath/a5f151_6e2907b9acf449689b8e8b3a1c9f472e.jpg",
+    "images/the oath/a5f151_8c9790eeb93f44e6b56a173546dcafbe.jpg",
+    "images/the oath/a5f151_5bc1253fdf0a4efdaa1c6cd91bfadefe.jpg",
+    "images/the oath/a5f151_ebc7c7dd74f0423b8c8a82b8d7f474e6.jpg",
+    "images/the oath/a5f151_34693f2060914a948ed6ce87e5e1884b.jpg",
+    "images/the oath/a5f151_65d14f28698a45cfb30ebaa2051b12ee.jpg",
+  ]},
+  { id: 20, year: 2011, title: "Mother of Him", titleHe: "אמא שלו", venue: "Beit Lessin Theatre", venueHe: "תיאטרון בית ליסין", emoji: "🌸", playwright: "Evan Placey", playwrightHe: "איוון פלאסי", director: "Ilan Ronen", directorHe: "אילן רונן", costume: "Dana Tsarfaty", costumeHe: "דנה צרפתי", lighting: "Uri Morag", lightingHe: "אורי מורג", desc: "", clipUrl: "", mainImage: "images/mother of him/a5f151_ddca8195ad8b6eb84a8fd677e4b4a36a.jpg",
+  images: [
+    "images/mother of him/a5f151_ddca8195ad8b6eb84a8fd677e4b4a36a.jpg",
+    "images/mother of him/a5f151_2b92f8182b978600785e572f451cf62c.jpg",
+    "images/mother of him/a5f151_712397d5a25e65751058d741fb7c354b.jpg",
+    "images/mother of him/a5f151_182dacd4ed2c6b8a3e7dffd68162074d.jpg",
+    "images/mother of him/a5f151_bcb2f54586177b2892c14d33b73512ce.jpg",
+  ]},
+];
+
+// ══ LANGUAGE ══
+let lang = 'en';
+
+const i18n = {
+  en: {
+    navSubtitle: 'Theater Design',
+    workCount: n => n + ' productions',
+    workTitle: 'Work',
+    backBtn: 'All Work',
+    footerTitle: 'Theater Design',
+    prevProd: '← Previous',
+    nextProd: 'Next →',
+    metaTheatre: 'Theatre',
+    metaRole: 'Role',
+    metaDirector: 'Director',
+    langBtn: 'עב',
+    contactLabel: 'Contact me:',
+  },
+  he: {
+    navSubtitle: 'עיצוב תיאטרון',
+    workCount: n => n + ' הפקות',
+    workTitle: 'עבודות',
+    backBtn: 'כל העבודות',
+    footerTitle: 'עיצוב תיאטרון',
+    prevProd: '→ הקודמת',
+    nextProd: 'הבאה ←',
+    metaTheatre: 'תיאטרון',
+    metaRole: 'תפקיד',
+    metaDirector: 'במאי',
+    langBtn: 'EN',
+    contactLabel: 'צור קשר:',
+  }
+};
+
+function toggleLang() {
+  lang = lang === 'en' ? 'he' : 'en';
+  applyLang();
+}
+
+function applyLang() {
+  const t = i18n[lang];
+  const isHe = lang === 'he';
+
+  document.body.classList.toggle('rtl', isHe);
+  document.documentElement.lang = lang;
+
+  document.getElementById('nav-subtitle').textContent = t.navSubtitle;
+  document.getElementById('nav-logo-text').textContent = isHe ? 'ניב מנור' : 'Niv Manor';
+  document.getElementById('lang-btn').textContent = t.langBtn;
+  document.getElementById('contact-label').textContent = t.contactLabel;
+  document.getElementById('phone-en').style.display = isHe ? 'none' : '';
+  document.getElementById('phone-he').style.display = isHe ? '' : 'none';
+  const footerEl = document.getElementById('footer-title');
+  if (footerEl) footerEl.innerHTML = t.footerTitle;
+  document.getElementById('btn-back-work').textContent = t.backBtn;
+
+  // nav links
+  document.querySelectorAll('.nav-links a[data-en]').forEach(el => {
+    el.textContent = el.dataset[lang];
+  });
+
+  // slide labels
+  document.querySelectorAll('.slide-label[data-en]').forEach(el => {
+    el.textContent = el.dataset[lang];
+  });
+
+  // update hero slide labels for current lang
+  document.querySelectorAll('.slide-label').forEach(el => {
+    const prodIdx = parseInt(el.dataset.prod);
+    if (!isNaN(prodIdx) && productions[prodIdx]) {
+      const p = productions[prodIdx];
+      el.textContent = isHe ? `${p.titleHe} · ${p.venueHe || p.venue}` : `${p.title} · ${p.venue}`;
+    }
+  });
+
+  // about sections
+  document.getElementById('about-en').style.display = isHe ? 'none' : 'block';
+  document.getElementById('about-he').style.display = isHe ? 'block' : 'none';
+
+  // re-render dynamic content
+  renderWorkGrid();
+  setTimeout(renderWorkGrid, 0);
+  if (document.getElementById('page-production').classList.contains('active')) {
+    renderProduction();
+  }
+}
+
+
+
+let currentProdIndex = 0;
+
+// ══ NAVIGATION ══
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  const navEl = document.getElementById('nav-' + (name === 'production' ? 'work' : name));
+  if (navEl) navEl.classList.add('active');
+  window.scrollTo(0, 0);
+
+  if (name === 'work') renderWorkGrid();
+  if (name === 'production' && currentProdIndex >= 0) renderProduction();
+}
+
+// ══ WORK GRID ══
+function renderWorkGrid() {
+  const grid = document.getElementById('work-grid');
+  const isHe = lang === 'he';
+  const sorted = [...productions].sort((a, b) => b.year - a.year);
+  grid.innerHTML = sorted.map((p, i) => {
+    const bg = `hsl(${(i * 23 + 200) % 360}, 8%, ${13 + (i % 4) * 4}%)`;
+    const title = isHe ? p.titleHe : p.title;
+    const thumb = p.mainImage
+      ? `<img src="${p.mainImage}" alt="${title}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s ease;">`
+      : `<div class="work-thumb-placeholder" style="background:${bg};width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;color:rgba(255,255,255,0.07);">${p.emoji}</div>`;
+    return `
+    <div class="work-item" onclick="openProduction(${productions.indexOf(p)})">
+      <div class="work-thumb">${thumb}</div>
+      <div class="work-info-title">${title}</div>
+      <div class="work-info-year">${p.year}</div>
+    </div>`;
+  }).join('');
+}
+
+// ══ PRODUCTION DETAIL ══
+function openProduction(index) {
+  currentProdIndex = index;
+  renderProduction();
+  showPage('production');
+}
+
+function renderProduction() {
+  const p = productions[currentProdIndex];
+  const t = i18n[lang];
+  const isHe = lang === 'he';
+
+  // left column — title, venue, year
+  document.getElementById('prod-title').textContent = isHe ? p.titleHe : p.title;
+  const pwEl = document.getElementById('prod-playwright');
+  const pw = isHe ? (p.playwrightHe || p.playwright) : p.playwright;
+  pwEl.textContent = pw ? (isHe ? `מאת ${pw}` : `by ${pw}`) : '';
+  document.getElementById('prod-venue-year').innerHTML = `${isHe ? (p.venueHe || p.venue) : p.venue}<br>${p.year}`;
+
+  // clip button
+  const clipBtn = document.getElementById('prod-clip-btn');
+  if (p.clipUrl) {
+    clipBtn.style.display = 'inline-flex';
+    clipBtn.textContent = isHe ? 'צפו בקליפ' : 'Watch clip';
+    clipBtn.onclick = () => openClip(p.clipUrl);
+  } else {
+    clipBtn.style.display = 'none';
+  }
+  document.getElementById('prod-desc').textContent = p.desc || '';
+
+  // right column — credits
+  const meta = document.getElementById('prod-meta');
+  const nivName = isHe ? 'ניב מנור' : 'Niv Manor';
+  const costumeVal = isHe ? (p.costumeHe || p.costume) : p.costume;
+  const lightingVal = isHe ? (p.lightingHe || p.lighting) : p.lighting;
+  const directorVal = isHe ? (p.directorHe || p.director) : p.director;
+
+  const credits = [
+    [isHe ? 'עיצוב תפאורה' : 'Set Designer',      nivName],
+    [isHe ? 'עיצוב תלבושות' : 'Costume Designer',  costumeVal || nivName],
+    [isHe ? 'עיצוב תאורה' : 'Lighting Designer',   lightingVal],
+    [isHe ? 'במאי' : 'Director',                   directorVal],
+  ].filter(([, val]) => val);
+  meta.innerHTML = credits.map(([label, val]) => `
+    <div class="prod-meta-row">
+      <span class="prod-meta-label">${label}</span>
+      <span class="prod-meta-value">${val}</span>
+    </div>
+  `).join('');
+
+  // gallery with real images
+  const imgs = p.images || [];
+  const mainEl = document.getElementById('gallery-main');
+  const thumbs = document.getElementById('gallery-thumbs');
+
+  function updateImgNav() {
+    const idx = window._currentImg || 0;
+    const prevBtn = document.getElementById('btn-prev-img');
+    const nextBtn = document.getElementById('btn-next-img');
+    if (prevBtn) {
+      prevBtn.textContent = isHe ? '→ הקודמת' : 'Previous';
+      prevBtn.style.visibility = idx > 0 ? 'visible' : 'hidden';
+    }
+    if (nextBtn) {
+      nextBtn.textContent = isHe ? 'הבאה ←' : 'Next';
+      nextBtn.style.visibility = idx < imgs.length - 1 ? 'visible' : 'hidden';
+    }
+  }
+
+  function showImg(idx) {
+    window._currentImg = idx;
+    if (imgs[idx]) {
+      mainEl.innerHTML = `<img src="${imgs[idx]}" alt="${p.title}" style="width:100%;height:100%;object-fit:contain;display:block;">`;
+    } else {
+      mainEl.innerHTML = `<div class="gallery-main-placeholder" style="background:hsl(${(currentProdIndex*23+200)%360},8%,18%);">${p.emoji}</div>`;
+    }
+    mainEl.onclick = openLightbox;
+    document.querySelectorAll('.gallery-thumb-num').forEach((el, i) => {
+      el.classList.toggle('active', i === idx);
+    });
+    updateImgNav();
+  }
+
+  window._showImg = showImg;
+  window._currentImg = 0;
+
+  const count = imgs.length || 1;
+  thumbs.innerHTML = Array.from({length: count}, (_, i) => `
+    <span class="gallery-thumb-num ${i===0?'active':''}" onclick="window._showImg(${i})">${i+1}</span>
+  `).join('');
+
+  showImg(0);
+}
+
+function selectThumbNum(el, idx) {
+  document.querySelectorAll('.gallery-thumb-num').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function openLightbox() {
+  const p = productions[currentProdIndex];
+  const idx = window._currentImg || 0;
+  const lb = document.getElementById('lightbox');
+  const content = document.getElementById('lightbox-content');
+  if (p.images && p.images[idx]) {
+    content.innerHTML = `<img src="${p.images[idx]}" alt="${p.title}" style="max-width:92vw;max-height:88vh;display:block;">`;
+  } else {
+    content.innerHTML = `<div class="lightbox-placeholder" style="background:hsl(${(currentProdIndex*23+200)%360},8%,14%);">${p.emoji}</div>`;
+  }
+  const imgs = p.images || [];
+  document.querySelector('.lightbox-prev').style.visibility = idx > 0 ? 'visible' : 'hidden';
+  document.querySelector('.lightbox-next').style.visibility = idx < imgs.length - 1 ? 'visible' : 'hidden';
+  lb.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function lightboxNav(dir) {
+  const p = productions[currentProdIndex];
+  const imgs = p.images || [];
+  const next = (window._currentImg || 0) + dir;
+  if (next >= 0 && next < imgs.length) {
+    window._showImg(next);
+    const content = document.getElementById('lightbox-content');
+    content.innerHTML = `<img src="${imgs[next]}" alt="${p.title}" style="max-width:92vw;max-height:88vh;display:block;">`;
+    document.querySelector('.lightbox-prev').style.visibility = next > 0 ? 'visible' : 'hidden';
+    document.querySelector('.lightbox-next').style.visibility = next < imgs.length - 1 ? 'visible' : 'hidden';
+  }
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function openClip(url) {
+  const modal = document.getElementById('clip-modal');
+  const content = document.getElementById('clip-content');
+  // convert youtube watch URL to embed
+  const embedUrl = url.replace('watch?v=', 'embed/').replace('youtu.be/', 'www.youtube.com/embed/');
+  content.innerHTML = `<iframe src="${embedUrl}?autoplay=1" allowfullscreen allow="autoplay"></iframe>`;
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeClip() {
+  document.getElementById('clip-modal').classList.remove('open');
+  document.getElementById('clip-content').innerHTML = '';
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeLightbox(); closeClip(); }
+  if (document.getElementById('lightbox').classList.contains('open')) {
+    if (e.key === 'ArrowRight') lightboxNav(1);
+    if (e.key === 'ArrowLeft') lightboxNav(-1);
+  }
+});
+
+function navigateImg(dir) {
+  const p = productions[currentProdIndex];
+  const imgs = p.images || [];
+  const next = (window._currentImg || 0) + dir;
+  if (next >= 0 && next < imgs.length) {
+    window._showImg(next);
+  }
+}
+
+function navigateProd(dir) {
+  const next = currentProdIndex + dir;
+  if (next >= 0 && next < productions.length) {
+    currentProdIndex = next;
+    renderProduction();
+    window.scrollTo(0, 0);
+  }
+}
+
+// ══ HERO SLIDESHOW — random mainImages ══
+let currentSlide = 0;
+let isAnimating = false;
+let heroProductions = [];
+
+function initHero() {
+  // pick 5 random productions that have a mainImage
+  const pool = productions.filter(p => p.mainImage).slice();
+  pool.sort(() => Math.random() - 0.5);
+  heroProductions = pool.slice(0, 5);
+
+  const slidesEl = document.querySelector('.hero-slides');
+  slidesEl.innerHTML = heroProductions.map((p, i) => {
+    return `<div class="hero-slide ${i===0?'state-current':'state-hidden'}" style="background-image:url('${p.mainImage}');background-size:cover;background-position:center;"></div>`;
+  }).join('');
+
+  // label below image
+  let labelEl = document.getElementById('hero-label');
+  if (!labelEl) {
+    labelEl = document.createElement('div');
+    labelEl.id = 'hero-label';
+    labelEl.className = 'slide-label';
+    document.querySelector('.hero-container').insertBefore(labelEl, document.querySelector('.hero-dots'));
+  }
+  const first = heroProductions[0];
+  const isHe = lang === 'he';
+  labelEl.textContent = isHe ? `${first.titleHe} · ${first.venueHe || first.venue}` : `${first.title} · ${first.venue}`;
+  setTimeout(() => labelEl.classList.add('visible'), 50);
+
+  // rebuild dots
+  const dotsEl = document.querySelector('.hero-dots');
+  dotsEl.innerHTML = heroProductions.map((_, i) =>
+    `<div class="hero-dot ${i===0?'active':''}" onclick="goToSlide(${i})"></div>`
+  ).join('');
+}
+
+function getSlides() { return document.querySelectorAll('.hero-slide'); }
+function getDots()   { return document.querySelectorAll('.hero-dot'); }
+function goToSlide(n) {
+  if (n === currentSlide || isAnimating) return;
+  isAnimating = true;
+
+  const slides = getSlides();
+  const dots   = getDots();
+  const prev   = currentSlide;
+  currentSlide = n;
+
+  // outgoing: slide out to left
+  slides[prev].classList.remove('state-current');
+  slides[prev].classList.add('animating', 'state-outgoing');
+
+  // incoming: start from right, then push in
+  slides[n].classList.remove('state-hidden');
+  slides[n].classList.add('state-incoming');
+
+  // force reflow so the browser registers the start position
+  slides[n].getBoundingClientRect();
+
+  // animate incoming to center
+  slides[n].classList.add('animating');
+  slides[n].classList.replace('state-incoming', 'state-current');
+
+  dots[prev].classList.remove('active');
+  dots[n].classList.add('active');
+
+  // update label below
+  const labelEl = document.getElementById('hero-label');
+  if (labelEl && heroProductions[n]) {
+    const isHe = lang === 'he';
+    const p = heroProductions[n];
+    labelEl.classList.remove('visible');
+    setTimeout(() => {
+      labelEl.textContent = isHe ? `${p.titleHe} · ${p.venueHe || p.venue}` : `${p.title} · ${p.venue}`;
+      labelEl.classList.add('visible');
+    }, 400);
+  }
+
+  setTimeout(() => {
+    slides[prev].classList.remove('animating', 'state-outgoing');
+    slides[prev].classList.add('state-hidden');
+    slides[n].classList.remove('animating');
+    isAnimating = false;
+  }, 750);
+}
+
+let slideTimer = setInterval(() => {
+  goToSlide((currentSlide + 1) % getSlides().length);
+}, 5000);
+
+// ══ NAV SCROLL ══
+window.addEventListener('scroll', () => {
+  document.getElementById('main-nav').classList.toggle('scrolled', window.scrollY > 10);
+});
+
+// ══ LOAD IMAGES FROM JSON ══
+async function loadImages() {
+  try {
+    const res = await fetch('images.json');
+    if (!res.ok) throw new Error('not found');
+    const imagesData = await res.json();
+    const normalize = s => s.toLowerCase().replace(/[?''':.]/g, '').replace(/[-\s]+/g, ' ').trim();
+    productions.forEach(p => {
+      const folder = Object.keys(imagesData).find(k => normalize(k) === normalize(p.title));
+      if (folder) {
+        p.images = imagesData[folder];
+        p.mainImage = imagesData[folder][0];
+      }
+    });
+  } catch(e) {
+    console.log('images.json not loaded:', e.message);
+  }
+  initHero();
+  renderWorkGrid();
+  applyLang();
+}
+
+// init
+loadImages();
+</script>
+<!-- clip modal -->
+<div class="clip-modal" id="clip-modal" onclick="closeClip()">
+  <div class="clip-inner" onclick="event.stopPropagation()">
+    <button class="clip-close" onclick="closeClip()">Close ×</button>
+    <div id="clip-content"></div>
+  </div>
+</div>
+
+<!-- lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <div class="lightbox-inner" onclick="event.stopPropagation()">
+    <button class="lightbox-close" onclick="closeLightbox()">Close ×</button>
+    <button class="lightbox-arrow lightbox-prev" onclick="lightboxNav(-1)">&#8592;</button>
+    <div id="lightbox-content"></div>
+    <button class="lightbox-arrow lightbox-next" onclick="lightboxNav(1)">&#8594;</button>
+  </div>
+</div>
+
+</body>
+</html>
