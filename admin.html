@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ניהול הפקות — ניב מנור</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #f5f5f5; color: #222; min-height: 100vh; }
+
+  /* Login */
+  #login-screen {
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh;
+  }
+  .login-box {
+    background: white; padding: 3rem; border-radius: 4px;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.08); width: 320px;
+  }
+  .login-box h1 { font-size: 1.1rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 2rem; font-weight: 400; }
+  .login-box input {
+    width: 100%; border: 1px solid #ddd; padding: 10px 14px;
+    font-size: 1rem; border-radius: 2px; margin-bottom: 1rem; outline: none;
+  }
+  .login-box input:focus { border-color: #999; }
+  .login-error { color: #c00; font-size: 0.8rem; margin-bottom: 0.5rem; display: none; }
+
+  /* Admin */
+  #admin-screen { display: none; }
+  .admin-nav {
+    background: white; border-bottom: 1px solid #eee;
+    padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between;
+  }
+  .admin-nav h1 { font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 400; }
+  .admin-nav a { font-size: 0.75rem; color: #999; text-decoration: none; letter-spacing: 0.05em; }
+  .admin-nav a:hover { color: #222; }
+
+  .admin-body { max-width: 700px; margin: 2rem auto; padding: 0 1.5rem; }
+
+  .card { background: white; border-radius: 4px; padding: 2rem; box-shadow: 0 1px 8px rgba(0,0,0,0.06); margin-bottom: 1.5rem; }
+  .card h2 { font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: #999; margin-bottom: 1.5rem; font-weight: 400; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+  .form-row.single { grid-template-columns: 1fr; }
+  .form-row.triple { grid-template-columns: 1fr 1fr 1fr; }
+
+  label { font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: #999; display: block; margin-bottom: 0.3rem; }
+  input[type="text"], input[type="number"], input[type="url"], select, textarea {
+    width: 100%; border: 1px solid #e0e0e0; padding: 8px 12px;
+    font-size: 0.9rem; border-radius: 2px; outline: none; background: #fafafa;
+    font-family: inherit;
+  }
+  input:focus, select:focus, textarea:focus { border-color: #999; background: white; }
+  textarea { resize: vertical; min-height: 60px; }
+
+  .btn {
+    background: #222; color: white; border: none; padding: 10px 24px;
+    font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+    cursor: pointer; border-radius: 2px; transition: background 0.2s;
+  }
+  .btn:hover { background: #444; }
+  .btn:disabled { background: #ccc; cursor: not-allowed; }
+  .btn-secondary { background: none; color: #666; border: 1px solid #ddd; }
+  .btn-secondary:hover { background: #f5f5f5; }
+
+  .status { font-size: 0.8rem; margin-top: 1rem; padding: 10px 14px; border-radius: 2px; display: none; }
+  .status.success { background: #e8f5e9; color: #2e7d32; display: block; }
+  .status.error { background: #ffebee; color: #c62828; display: block; }
+
+  .divider { border: none; border-top: 1px solid #eee; margin: 1.5rem 0; }
+
+  .checkbox-row { display: flex; align-items: center; gap: 0.5rem; }
+  .checkbox-row input { width: auto; }
+  .checkbox-row label { margin: 0; font-size: 0.75rem; text-transform: none; letter-spacing: 0; color: #444; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <h1>NIV MANOR<br>Admin</h1>
+    <div class="login-error" id="login-error">סיסמה שגויה</div>
+    <input type="password" id="password-input" placeholder="סיסמה" onkeydown="if(event.key==='Enter')login()">
+    <button class="btn" style="width:100%" onclick="login()">כניסה</button>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div id="admin-screen">
+  <nav class="admin-nav">
+    <h1>ניהול הפקות — ניב מנור</h1>
+    <a href="index.html" target="_blank">← לאתר</a>
+  </nav>
+
+  <div class="admin-body">
+    <div class="card">
+      <h2>הוספת הפקה חדשה</h2>
+
+      <!-- שמות -->
+      <div class="form-row">
+        <div>
+          <label>שם ההפקה (אנגלית)</label>
+          <input type="text" id="f-title" placeholder="The Magic Flute">
+        </div>
+        <div>
+          <label>שם ההפקה (עברית)</label>
+          <input type="text" id="f-titleHe" placeholder="חליל הקסם" dir="rtl">
+        </div>
+      </div>
+
+      <!-- מחזאי -->
+      <div class="form-row">
+        <div>
+          <label>מחזאי / קומפוזיטור (אנגלית)</label>
+          <input type="text" id="f-playwright" placeholder="Mozart">
+        </div>
+        <div>
+          <label>מחזאי / קומפוזיטור (עברית)</label>
+          <input type="text" id="f-playwrightHe" placeholder="מוצרט" dir="rtl">
+        </div>
+      </div>
+
+      <!-- תיאטרון + שנה -->
+      <div class="form-row">
+        <div>
+          <label>תיאטרון (אנגלית)</label>
+          <input type="text" id="f-venue" placeholder="The Israeli Opera">
+        </div>
+        <div>
+          <label>תיאטרון (עברית)</label>
+          <input type="text" id="f-venueHe" placeholder="האופרה הישראלית" dir="rtl">
+        </div>
+      </div>
+
+      <div class="form-row triple">
+        <div>
+          <label>שנה</label>
+          <input type="number" id="f-year" placeholder="2024" min="1990" max="2099">
+        </div>
+        <div style="grid-column: span 2">
+          <label>קליפ YouTube (URL)</label>
+          <input type="url" id="f-clipUrl" placeholder="https://www.youtube.com/watch?v=...">
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <!-- במאי -->
+      <div class="form-row">
+        <div>
+          <label>במאי (אנגלית)</label>
+          <input type="text" id="f-director" placeholder="Ilan Ronen">
+        </div>
+        <div>
+          <label>במאי (עברית)</label>
+          <input type="text" id="f-directorHe" placeholder="אילן רונן" dir="rtl">
+        </div>
+      </div>
+
+      <!-- תלבושות -->
+      <div class="form-row">
+        <div>
+          <label>עיצוב תלבושות (אנגלית)</label>
+          <input type="text" id="f-costume" placeholder="Ula Shevtzov">
+        </div>
+        <div>
+          <label>עיצוב תלבושות (עברית)</label>
+          <input type="text" id="f-costumeHe" placeholder="אולה שבצוב" dir="rtl">
+        </div>
+      </div>
+
+      <!-- תאורה -->
+      <div class="form-row">
+        <div>
+          <label>עיצוב תאורה (אנגלית)</label>
+          <input type="text" id="f-lighting" placeholder="Ziv Voloshin">
+        </div>
+        <div>
+          <label>עיצוב תאורה (עברית)</label>
+          <input type="text" id="f-lightingHe" placeholder="זיו וולושין" dir="rtl">
+        </div>
+      </div>
+
+      <!-- וידאו -->
+      <div class="form-row">
+        <div>
+          <label>עיצוב וידאו (אנגלית)</label>
+          <input type="text" id="f-video" placeholder="Niv Manor">
+        </div>
+        <div>
+          <label>עיצוב וידאו (עברית)</label>
+          <input type="text" id="f-videoHe" placeholder="ניב מנור" dir="rtl">
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <!-- תמונה ראשית -->
+      <div class="form-row single">
+        <div>
+          <label>נתיב תמונה ראשית</label>
+          <input type="text" id="f-mainImage" placeholder="images/the-magic-flute/magic_flute1large.jpeg">
+        </div>
+      </div>
+
+      <!-- showInAbout -->
+      <div class="checkbox-row" style="margin-bottom:1.5rem;">
+        <input type="checkbox" id="f-showInAbout" checked>
+        <label for="f-showInAbout">הצג בעמוד אודות</label>
+      </div>
+
+      <div style="display:flex; gap:1rem; align-items:center;">
+        <button class="btn" id="submit-btn" onclick="submitForm()">הוסף הפקה</button>
+        <button class="btn btn-secondary" onclick="clearForm()">נקה טופס</button>
+      </div>
+
+      <div class="status" id="status-msg"></div>
+    </div>
+
+    <div class="card">
+      <h2>קישורים שימושיים</h2>
+      <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+        <a href="https://docs.google.com/spreadsheets/d/1icXeshkwFOaYXNsO5m6L1J_VFrNrigqr3Y4lmIKHMtc" target="_blank" class="btn btn-secondary">פתח Google Sheets</a>
+        <a href="index.html" target="_blank" class="btn btn-secondary">פתח האתר</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const PASS = 'nm161226';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz5E2Vbn1TCkAF8J78dEKiy9VOLjS01DBz-lp1yMDFUdL4uRdsQf0CWvU7-ks0iKDkKhg/exec';
+
+function login() {
+  const val = document.getElementById('password-input').value;
+  if (val === PASS) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin-screen').style.display = 'block';
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+    document.getElementById('password-input').value = '';
+    document.getElementById('password-input').focus();
+  }
+}
+
+function clearForm() {
+  ['title','titleHe','playwright','playwrightHe','venue','venueHe',
+   'year','clipUrl','director','directorHe','costume','costumeHe',
+   'lighting','lightingHe','video','videoHe','mainImage'].forEach(id => {
+    document.getElementById('f-' + id).value = '';
+  });
+  document.getElementById('f-showInAbout').checked = true;
+  document.getElementById('status-msg').className = 'status';
+}
+
+async function submitForm() {
+  const btn = document.getElementById('submit-btn');
+  const status = document.getElementById('status-msg');
+
+  const title = document.getElementById('f-title').value.trim();
+  const year = document.getElementById('f-year').value.trim();
+  if (!title || !year) {
+    status.textContent = 'שם ההפקה והשנה הם שדות חובה';
+    status.className = 'status error';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'שומר...';
+  status.className = 'status';
+
+  const row = {
+    action: 'addRow',
+    title,
+    titleHe: document.getElementById('f-titleHe').value.trim(),
+    year,
+    venue: document.getElementById('f-venue').value.trim(),
+    venueHe: document.getElementById('f-venueHe').value.trim(),
+    playwright: document.getElementById('f-playwright').value.trim(),
+    playwrightHe: document.getElementById('f-playwrightHe').value.trim(),
+    director: document.getElementById('f-director').value.trim(),
+    directorHe: document.getElementById('f-directorHe').value.trim(),
+    costume: document.getElementById('f-costume').value.trim(),
+    costumeHe: document.getElementById('f-costumeHe').value.trim(),
+    lighting: document.getElementById('f-lighting').value.trim(),
+    lightingHe: document.getElementById('f-lightingHe').value.trim(),
+    video: document.getElementById('f-video').value.trim(),
+    videoHe: document.getElementById('f-videoHe').value.trim(),
+    clipUrl: document.getElementById('f-clipUrl').value.trim(),
+    showInAbout: document.getElementById('f-showInAbout').checked,
+    mainImage: document.getElementById('f-mainImage').value.trim(),
+  };
+
+  try {
+    const res = await fetch(SCRIPT_URL + '?action=addRow', {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(row)
+    });
+
+    status.textContent = '✓ ההפקה נוספה בהצלחה! רענן את האתר לראות את השינוי.';
+    status.className = 'status success';
+    clearForm();
+  } catch(e) {
+    status.textContent = 'שגיאה: ' + e.message;
+    status.className = 'status error';
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'הוסף הפקה';
+}
+
+document.getElementById('password-input').focus();
+</script>
+</body>
+</html>
