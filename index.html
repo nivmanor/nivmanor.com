@@ -384,7 +384,7 @@
   .prod-info-row {
     display: grid;
     grid-template-columns: 1fr auto;
-    gap: 1.5rem;
+    gap: 0.5rem;
     padding: 1.5rem 2.5rem 5rem;
     max-width: min(72vw, calc((100vh - 9rem) * 16 / 10 * 0.8));
     margin: 0 auto;
@@ -609,19 +609,19 @@
     text-align: center;
     margin-bottom: 0.8rem;
   }
-    position: fixed;
-    top: 1.5rem;
-    right: 1.5rem;
+
+  .lightbox-close {
+    position: static;
     background: none;
     border: none;
     color: rgba(255,255,255,0.5);
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     letter-spacing: 0.15em;
     text-transform: uppercase;
     cursor: pointer;
     font-family: var(--font-sans);
     transition: color 0.2s;
-    z-index: 600;
+    margin-bottom: 0.8rem;
   }
   .lightbox-close:hover { color: white; }
 
@@ -1365,16 +1365,15 @@ function buildAboutProductions(isHe) {
   const heEl = document.getElementById('about-productions-he');
   if (!enEl || !heEl) return;
 
-  const isOpera = v => v && v.toLowerCase().includes('opera');
-
   // Group by venue — only showInAbout, sorted chronologically within each venue
   const venueMap = {};
   productions
     .filter(p => {
       const v = p.showInAbout;
-      return v === true || v === 'TRUE' || v === 'true' || v === 1;
+      if (v === false || v === 'FALSE' || v === 'false' || v === 0 || v === '0') return false;
+      return true;
     })
-    .sort((a, b) => b.year - a.year)  // newest first within venue
+    .sort((a, b) => b.year - a.year)
     .forEach(p => {
       const key = p.venue;
       if (!venueMap[key]) venueMap[key] = { venue: p.venue, venueHe: p.venueHe, titles: [], titlesHe: [], maxYear: 0 };
@@ -1383,12 +1382,8 @@ function buildAboutProductions(isHe) {
       if (p.year > venueMap[key].maxYear) venueMap[key].maxYear = p.year;
     });
 
-  // Sort venues: opera first, then by most recent production
-  const groups = Object.values(venueMap).sort((a, b) => {
-    if (isOpera(a.venue) && !isOpera(b.venue)) return -1;
-    if (!isOpera(a.venue) && isOpera(b.venue)) return 1;
-    return b.maxYear - a.maxYear;
-  });
+  // Sort venues chronologically — most recent first
+  const groups = Object.values(venueMap).sort((a, b) => b.maxYear - a.maxYear);
 
   const buildText = (isHe) => {
     const prefix = isHe ? 'בין ההפקות שעיצב: ' : 'Among his productions: ';
@@ -1608,8 +1603,10 @@ loadData();
 <div class="lightbox" id="lightbox">
   <button class="lightbox-arrow lightbox-prev" onclick="event.stopPropagation();lightboxNav(-1)">&#8592;</button>
   <div class="lightbox-inner" onclick="event.stopPropagation()">
-    <button class="lightbox-close" onclick="closeLightbox()">Close ×</button>
-    <div class="lightbox-counter" id="lightbox-counter"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;width:100%;margin-bottom:0.8rem;">
+      <div class="lightbox-counter" id="lightbox-counter" style="margin-bottom:0;"></div>
+      <button class="lightbox-close" onclick="closeLightbox()" style="margin-bottom:0;">Close ×</button>
+    </div>
     <div id="lightbox-content"></div>
   </div>
   <button class="lightbox-arrow lightbox-next" onclick="event.stopPropagation();lightboxNav(1)">&#8594;</button>
