@@ -1027,7 +1027,7 @@ const i18n = {
     nextProd: 'הבאה ←',
     metaTheatre: 'תיאטרון',
     metaRole: 'תפקיד',
-    metaDirector: 'במאי',
+    metaDirector: 'בימוי',
     langBtn: 'EN',
     contactLabel: 'צור קשר:',
   }
@@ -1177,7 +1177,7 @@ function renderProduction() {
     [isHe ? 'עיצוב תפאורה' : 'Set Designer',      nivName],
     [isHe ? 'עיצוב תלבושות' : 'Costume Designer',  costumeVal || nivName],
     [isHe ? 'עיצוב תאורה' : 'Lighting Designer',   lightingVal],
-    [isHe ? 'במאי' : 'Director',                   directorVal],
+    [isHe ? 'בימוי' : 'Director',                   directorVal],
   ].filter(([, val]) => val);
   meta.innerHTML = credits.map(([label, val]) => `
     <div class="prod-meta-row">
