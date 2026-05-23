@@ -464,8 +464,9 @@
   .clip-modal.open { display: flex; }
 
   .clip-inner {
-    width: min(860px, 90vw);
-    height: calc(min(860px, 90vw) * 9 / 16);
+    width: 90vw;
+    max-width: 900px;
+    aspect-ratio: 16/9;
     position: relative;
     cursor: default;
   }
@@ -1056,6 +1057,12 @@ function applyLang() {
   const footerEl = document.getElementById('footer-title');
   if (footerEl) footerEl.innerHTML = t.footerTitle;
   document.getElementById('btn-back-work').textContent = t.backBtn;
+
+  // update clip button text if visible
+  const clipBtn = document.getElementById('prod-clip-btn');
+  if (clipBtn && clipBtn.style.display !== 'none') {
+    clipBtn.textContent = isHe ? 'צפו בקליפ' : 'Watch clip';
+  }
 
   // nav links
   document.querySelectorAll('.nav-links a[data-en]').forEach(el => {
