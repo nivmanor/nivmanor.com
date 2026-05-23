@@ -465,12 +465,14 @@
 
   .clip-inner {
     width: min(860px, 90vw);
-    aspect-ratio: 16/9;
+    height: calc(min(860px, 90vw) * 9 / 16);
     position: relative;
     cursor: default;
   }
 
   .clip-inner iframe {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     border: none;
