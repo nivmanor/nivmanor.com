@@ -252,20 +252,20 @@
 
   .work-info-title {
     font-family: var(--font-sans);
-    font-size: 0.77rem;
+    font-size: 0.68rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--black);
-    padding: 0.55rem 0 0.15rem;
+    padding: 0.55rem 0 0.1rem;
     line-height: 1.4;
   }
 
   .work-info-year {
     font-family: var(--font-sans);
-    font-size: 0.6rem;
+    font-size: 0.58rem;
     letter-spacing: 0.08em;
     color: var(--gray);
-    padding-bottom: 0.2rem;
+    padding-bottom: 0.15rem;
   }
 
   /* ── PRODUCTION DETAIL PAGE ── */
@@ -399,8 +399,21 @@
     .gallery-nav-row { max-width: 100%; }
   }
 
-  /* title block above image */
-  .prod-header-top {
+  .prod-title-in-col {
+    font-family: var(--font-sans);
+    font-size: clamp(1.4rem, 2.5vw, 2.2rem);
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1.1;
+    color: var(--black);
+    margin-bottom: 0.2rem;
+  }
+
+  body.rtl .prod-title-in-col {
+    font-size: clamp(1.2rem, 2.2vw, 1.9rem);
+    letter-spacing: 0.01em;
+  }
     padding: 0.5rem 2.5rem 1.2rem;
     max-width: min(72vw, calc((100vh - 9rem) * 16 / 10 * 0.8));
     margin: 0 auto;
@@ -440,7 +453,14 @@
     line-height: 2;
   }
 
-  .prod-venue-name {
+  .prod-playwright-col {
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--gray);
+    letter-spacing: 0.02em;
+    margin-top: 0.2rem;
+  }
     font-family: var(--font-sans);
     font-size: 0.78rem;
     letter-spacing: 0.08em;
@@ -794,11 +814,7 @@
   <div class="production-back">
     <button class="btn-back" id="btn-back-work" onclick="showPage('work')" data-en="All Work" data-he="כל העבודות">All Work</button>
   </div>
-  <!-- title above image -->
-  <div class="prod-header-top">
-    <div class="prod-title-large" id="prod-title"></div>
-    <div class="prod-playwright" id="prod-playwright"></div>
-  </div>
+  <!-- no header above image -->
   <div class="prod-image-wrap">
     <div class="gallery-main" id="gallery-main">
       <div class="gallery-main-placeholder" id="gallery-placeholder"></div>
@@ -1216,10 +1232,18 @@ function renderProduction() {
 
   const directorVal = isHe ? (p.directorHe || p.director) : p.director;
   const venueStr = isHe ? (p.venueHe || p.venue) : p.venue;
-  let leftHtml = `<div class="prod-venue-name">${venueStr}</div>`;
+  const titleStr = isHe ? p.titleHe : p.title;
+  const pw = isHe ? (p.playwrightHe || p.playwright) : p.playwright;
+  let leftHtml = `<div class="prod-title-in-col">${titleStr}</div>`;
+  if (pw) leftHtml += `<div class="prod-playwright-col">${isHe ? `מאת ${pw}` : `by ${pw}`}</div>`;
+  leftHtml += `<div class="prod-venue-name" style="margin-top:1rem;">${venueStr}</div>`;
   leftHtml += `<div class="prod-year-line">${p.year}</div>`;
   if (directorVal) leftHtml += `<div class="prod-director-line">${isHe ? 'בימוי' : 'Director'}<span>${directorVal}</span></div>`;
   document.getElementById('prod-venue-year').innerHTML = leftHtml;
+
+  // update hidden elements (still needed for applyLang)
+  document.getElementById('prod-title').textContent = titleStr;
+  document.getElementById('prod-playwright').textContent = '';
 
   // clip button
   const clipBtn = document.getElementById('prod-clip-btn');
