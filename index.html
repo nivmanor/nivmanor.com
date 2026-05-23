@@ -340,21 +340,25 @@
 
   .gallery-thumbs {
     display: flex;
-    gap: 6px;
     align-items: center;
-  }
-
-  .gallery-thumb-num {
+    gap: 0.5rem;
     font-family: var(--font-sans);
     font-size: 0.65rem;
-    letter-spacing: 0.05em;
-    cursor: pointer;
-    padding: 2px 4px;
-    transition: color 0.2s;
+    letter-spacing: 0.1em;
+    color: var(--gray);
   }
-  .gallery-thumb-num:hover { color: var(--gray); }
-  .gallery-thumb-num.active { color: var(--black); font-weight: 500; }
-  .gallery-thumb-num:not(.active) { color: var(--gray); }
+
+  .gallery-counter {
+    font-family: var(--font-sans);
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    color: var(--gray);
+  }
+
+  .gallery-counter span {
+    color: var(--black);
+    font-weight: 500;
+  }
 
   .prod-prev-next {
     display: flex;
@@ -1223,9 +1227,8 @@ function renderProduction() {
       mainEl.innerHTML = `<div class="gallery-main-placeholder" style="background:hsl(${(currentProdIndex*23+200)%360},8%,18%);">${p.emoji}</div>`;
     }
     mainEl.onclick = openLightbox;
-    document.querySelectorAll('.gallery-thumb-num').forEach((el, i) => {
-      el.classList.toggle('active', i === idx);
-    });
+    const cur = document.getElementById('gallery-current');
+    if (cur) cur.textContent = idx + 1;
     updateImgNav();
   }
 
@@ -1233,9 +1236,7 @@ function renderProduction() {
   window._currentImg = 0;
 
   const count = imgs.length || 1;
-  thumbs.innerHTML = Array.from({length: count}, (_, i) => `
-    <span class="gallery-thumb-num ${i===0?'active':''}" onclick="window._showImg(${i})">${i+1}</span>
-  `).join('');
+  thumbs.innerHTML = `<div class="gallery-counter"><span id="gallery-current">1</span> / ${count}</div>`;
 
   showImg(0);
 }
