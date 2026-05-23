@@ -458,15 +458,22 @@
 
   .prod-director-line {
     font-family: var(--font-sans);
-    font-size: 0.72rem;
-    letter-spacing: 0.06em;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
     color: var(--gray);
     text-transform: uppercase;
-    margin-bottom: 0.4rem;
+    margin-top: 0.8rem;
+    margin-bottom: 0.2rem;
+    display: block;
   }
 
   .prod-director-line span {
+    font-size: 0.9rem;
+    letter-spacing: 0.01em;
     color: var(--black);
+    text-transform: none;
+    display: block;
+    margin-top: 0.1rem;
   }
 
   .btn-clip {
@@ -603,7 +610,14 @@
     color: rgba(255,255,255,0.1);
   }
 
-  .lightbox-close {
+  .lightbox-counter {
+    font-family: var(--font-sans);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.5);
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
     position: fixed;
     top: 1.5rem;
     right: 1.5rem;
@@ -1305,6 +1319,8 @@ function openLightbox() {
   const imgs = p.images || [];
   document.querySelector('.lightbox-prev').style.visibility = idx > 0 ? 'visible' : 'hidden';
   document.querySelector('.lightbox-next').style.visibility = idx < imgs.length - 1 ? 'visible' : 'hidden';
+  const counter = document.getElementById('lightbox-counter');
+  if (counter) counter.textContent = `${idx + 1} / ${imgs.length}`;
   lb.classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -1319,6 +1335,8 @@ function lightboxNav(dir) {
     content.innerHTML = `<img src="${imgs[next]}" alt="${p.title}" style="max-width:92vw;max-height:88vh;display:block;">`;
     document.querySelector('.lightbox-prev').style.visibility = next > 0 ? 'visible' : 'hidden';
     document.querySelector('.lightbox-next').style.visibility = next < imgs.length - 1 ? 'visible' : 'hidden';
+    const counter = document.getElementById('lightbox-counter');
+    if (counter) counter.textContent = `${next + 1} / ${imgs.length}`;
   }
 }
 
@@ -1600,6 +1618,7 @@ loadData();
   <button class="lightbox-arrow lightbox-prev" onclick="event.stopPropagation();lightboxNav(-1)">&#8592;</button>
   <div class="lightbox-inner" onclick="event.stopPropagation()">
     <button class="lightbox-close" onclick="closeLightbox()">Close ×</button>
+    <div class="lightbox-counter" id="lightbox-counter"></div>
     <div id="lightbox-content"></div>
   </div>
   <button class="lightbox-arrow lightbox-next" onclick="event.stopPropagation();lightboxNav(1)">&#8594;</button>
