@@ -730,7 +730,23 @@
   }
   .about-contact a:hover { border-bottom-color: var(--black); }
 
-  .btn-download-bio {
+  .btn-download-photo {
+    display: inline-block;
+    font-family: var(--font-sans);
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gray);
+    text-decoration: none;
+    border: 1px solid var(--light);
+    padding: 4px 12px;
+    border-radius: 2px;
+    transition: color 0.2s, border-color 0.2s;
+    margin-bottom: 2rem;
+    display: block;
+    width: fit-content;
+  }
+  .btn-download-photo:hover { color: var(--black); border-color: var(--gray); }
     display: inline-block;
     font-family: var(--font-sans);
     font-size: 0.65rem;
@@ -889,6 +905,7 @@
   </div>
   <div class="about-contact">
     <p>Contact: <a href="mailto:nivmanor@gmail.com">nivmanor@gmail.com</a> &nbsp;·&nbsp; <a href="tel:+972523221243" id="about-phone-en">+972-52-3221243</a><a href="tel:+972523221243" id="about-phone-he" style="display:none;">052-3221243</a></p>
+    <a href="nivmanor6.jpg" download class="btn-download-photo" id="btn-download-photo">↓ Download Photo</a>
   </div>
   <footer style="margin: 4rem -2.5rem 0; padding: 1.5rem 2.5rem;">
     <span>© 2025 Niv Manor</span>
@@ -1202,6 +1219,8 @@ function applyLang() {
 
   const bioBtn = document.getElementById('btn-download-bio');
   if (bioBtn) bioBtn.textContent = isHe ? '↓ הורד ביו' : '↓ Download Bio';
+  const photoBtn = document.getElementById('btn-download-photo');
+  if (photoBtn) photoBtn.textContent = isHe ? '↓ הורד תמונה' : '↓ Download Photo';
 
   // build about productions text
   buildAboutProductions(isHe);
