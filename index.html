@@ -384,7 +384,7 @@
   .prod-info-row {
     display: grid;
     grid-template-columns: 1fr auto;
-    gap: 3rem;
+    gap: 1.5rem;
     padding: 1.5rem 2.5rem 5rem;
     max-width: min(72vw, calc((100vh - 9rem) * 16 / 10 * 0.8));
     margin: 0 auto;
@@ -589,25 +589,16 @@
     width: 80vw;
     height: 85vh;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
   }
 
   .lightbox-inner img {
     max-width: 80vw;
-    max-height: 85vh;
+    max-height: 80vh;
     display: block;
     object-fit: contain;
-  }
-
-  .lightbox-placeholder {
-    width: 80vw;
-    aspect-ratio: 16/9;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 8rem;
-    color: rgba(255,255,255,0.1);
   }
 
   .lightbox-counter {
@@ -616,7 +607,7 @@
     letter-spacing: 0.1em;
     color: rgba(255,255,255,0.5);
     text-align: center;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.8rem;
   }
     position: fixed;
     top: 1.5rem;
@@ -1226,7 +1217,7 @@ function renderProduction() {
   const venueStr = isHe ? (p.venueHe || p.venue) : p.venue;
   let leftHtml = `<div class="prod-venue-name">${venueStr}</div>`;
   leftHtml += `<div class="prod-year-line">${p.year}</div>`;
-  if (directorVal) leftHtml += `<div class="prod-director-line">${isHe ? 'בימוי: ' : 'Dir: '}<span>${directorVal}</span></div>`;
+  if (directorVal) leftHtml += `<div class="prod-director-line">${isHe ? 'בימוי' : 'Director'}<span>${directorVal}</span></div>`;
   document.getElementById('prod-venue-year').innerHTML = leftHtml;
 
   // clip button
