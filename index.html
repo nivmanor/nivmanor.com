@@ -204,7 +204,7 @@
   .hero-dot.active { background: var(--black); }
 
   /* ── WORK PAGE ── */
-  #page-work { padding-top: 5rem; }
+  #page-work { padding-top: 5rem; width: 100%; }
 
   .work-grid {
     display: grid;
@@ -212,11 +212,8 @@
     gap: 1rem;
     padding: 2rem 2.5rem 4rem;
     background: var(--white);
-    direction: ltr;
-  }
-
-  body.rtl .work-grid {
-    direction: rtl;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .work-item {
