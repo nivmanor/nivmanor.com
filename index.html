@@ -826,7 +826,7 @@
   </div>
   <div style="display:flex; align-items:center; gap:1.5rem;">
     <ul class="nav-links">
-      <li><a onclick="showPage('home')" class="active" id="nav-home" data-en="Home" data-he="בית">Home</a></li>
+      
       <li><a onclick="showPage('work')" id="nav-work" data-en="Work" data-he="עבודות">Work</a></li>
       <li><a onclick="showPage('about')" id="nav-about" data-en="About" data-he="אודות">About</a></li>
     </ul>
@@ -907,10 +907,6 @@
     <p>Contact: <a href="mailto:nivmanor@gmail.com">nivmanor@gmail.com</a> &nbsp;·&nbsp; <a href="tel:+972523221243" id="about-phone-en">+972-52-3221243</a><a href="tel:+972523221243" id="about-phone-he" style="display:none;">052-3221243</a></p>
     <a href="nivmanor6.jpg" download class="btn-download-photo" id="btn-download-photo">↓ Download Photo</a>
   </div>
-  <footer style="margin: 4rem -2.5rem 0; padding: 1.5rem 2.5rem;">
-    <span>© 2025 Niv Manor</span>
-    <span>Tel Aviv</span>
-  </footer>
 </div>
 
 <script>
@@ -1209,7 +1205,7 @@ function applyLang() {
     const prodIdx = parseInt(el.dataset.prod);
     if (!isNaN(prodIdx) && productions[prodIdx]) {
       const p = productions[prodIdx];
-      el.textContent = isHe ? `${p.titleHe} · ${p.venueHe || p.venue}` : `${p.title} · ${p.venue}`;
+      el.textContent = isHe ? p.titleHe : p.title;
     }
   });
 
@@ -1520,7 +1516,7 @@ function initHero() {
   }
   const first = heroProductions[0];
   const isHe = lang === 'he';
-  labelEl.textContent = isHe ? `${first.titleHe} · ${first.venueHe || first.venue}` : `${first.title} · ${first.venue}`;
+  labelEl.textContent = isHe ? first.titleHe : first.title;
   setTimeout(() => labelEl.classList.add('visible'), 50);
 
   // rebuild dots
@@ -1566,7 +1562,7 @@ function goToSlide(n) {
     const p = heroProductions[n];
     labelEl.classList.remove('visible');
     setTimeout(() => {
-      labelEl.textContent = isHe ? `${p.titleHe} · ${p.venueHe || p.venue}` : `${p.title} · ${p.venue}`;
+      labelEl.textContent = isHe ? p.titleHe : p.title;
       labelEl.classList.add('visible');
     }, 400);
   }
