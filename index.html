@@ -26,7 +26,6 @@
     font-family: var(--font-sans);
     font-weight: 300;
     -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
   }
 
   /* NAV */
@@ -109,7 +108,7 @@
 
   /* PAGES */
   .page { display: none; }
-  .page.active { display: block; width: 100%; }
+  .page.active { display: block; }
 
   /* ── HOME PAGE ── */
   #page-home.active {
@@ -205,27 +204,26 @@
   .hero-dot.active { background: var(--black); }
 
   /* ── WORK PAGE ── */
-  #page-work { padding-top: 5rem; width: 100%; }
+  #page-work { padding-top: 5rem; }
 
   .work-grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 1rem;
-    padding: 2rem 2.5rem 4rem;
+    gap: 2rem 2.5rem;
+    padding: 2.5rem 2.5rem 4rem;
     background: var(--white);
-    width: 100%;
-    box-sizing: border-box;
+    align-items: flex-start;
   }
 
   .work-item {
     cursor: pointer;
-    width: calc(25% - 0.75rem);
+    width: 220px;
     flex-shrink: 0;
   }
 
   .work-thumb {
-    width: 100%;
-    aspect-ratio: 3/2;
+    width: 220px;
+    height: 148px;
     overflow: hidden;
     position: relative;
     background: #1a1a18;
@@ -274,7 +272,7 @@
     letter-spacing: 0.08em;
     color: var(--black);
     flex-shrink: 0;
-    margin-right: 0.3rem;
+    margin-left: 0.3rem;
   }
 
   /* ── PRODUCTION DETAIL PAGE ── */
@@ -916,6 +914,7 @@
     <p>Contact: <a href="mailto:nivmanor@gmail.com">nivmanor@gmail.com</a> &nbsp;·&nbsp; <a href="tel:+972523221243" id="about-phone-en">+972-52-3221243</a><a href="tel:+972523221243" id="about-phone-he" style="display:none;">052-3221243</a></p>
     <a href="nivmanor6.jpg" download class="btn-download-photo" id="btn-download-photo">↓ Download Photo</a>
   </div>
+
 </div>
 
 <script>
