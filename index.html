@@ -209,21 +209,21 @@
   .work-grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 2rem 2.5rem;
-    padding: 2.5rem 2.5rem 4rem;
+    gap: 1.2rem 1.5rem;
+    padding: 2rem 2.5rem 4rem;
     background: var(--white);
     align-items: flex-start;
   }
 
   .work-item {
     cursor: pointer;
-    width: 220px;
+    width: 264px;
     flex-shrink: 0;
   }
 
   .work-thumb {
-    width: 220px;
-    height: 148px;
+    width: 264px;
+    height: 178px;
     overflow: hidden;
     position: relative;
     background: #1a1a18;
@@ -250,13 +250,19 @@
   .work-item:hover .work-thumb img,
   .work-item:hover .work-thumb-placeholder { transform: scale(1.04); }
 
+  .work-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 0.45rem 0 0.1rem;
+  }
+
   .work-info-title {
     font-family: var(--font-sans);
     font-size: 0.68rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--black);
-    padding: 0.55rem 0 0.1rem;
     line-height: 1.4;
   }
 
@@ -265,7 +271,8 @@
     font-size: 0.58rem;
     letter-spacing: 0.08em;
     color: var(--gray);
-    padding-bottom: 0.15rem;
+    flex-shrink: 0;
+    margin-right: 0.3rem;
   }
 
   /* ── PRODUCTION DETAIL PAGE ── */
@@ -1260,9 +1267,10 @@ function renderWorkGrid() {
     return `
     <div class="work-item" onclick="openProduction(${productions.indexOf(p)})">
       <div class="work-thumb">${thumb}</div>
-      <div class="work-info-title">${title}</div>
-      <div class="work-info-year">${p.year}</div>
-    </div>`;
+      <div class="work-info-row">
+        <div class="work-info-title">${title}</div>
+        <div class="work-info-year">${p.year}</div>
+      </div>`;
   }).join('');
 }
 
