@@ -207,23 +207,21 @@
   #page-work { padding-top: 5rem; }
 
   .work-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.2rem 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
     padding: 2rem 2.5rem 4rem;
     background: var(--white);
-    align-items: flex-start;
   }
 
   .work-item {
     cursor: pointer;
-    width: 264px;
-    flex-shrink: 0;
+    width: 100%;
   }
 
   .work-thumb {
-    width: 264px;
-    height: 178px;
+    width: 100%;
+    aspect-ratio: 3/2;
     overflow: hidden;
     position: relative;
     background: #1a1a18;
