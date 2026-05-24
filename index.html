@@ -26,6 +26,7 @@
     font-family: var(--font-sans);
     font-weight: 300;
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
   }
 
   /* NAV */
@@ -108,7 +109,7 @@
 
   /* PAGES */
   .page { display: none; }
-  .page.active { display: block; }
+  .page.active { display: block; width: 100%; }
 
   /* ── HOME PAGE ── */
   #page-home.active {
@@ -207,8 +208,8 @@
   #page-work { padding-top: 5rem; width: 100%; }
 
   .work-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    display: flex;
+    flex-wrap: wrap;
     gap: 1rem;
     padding: 2rem 2.5rem 4rem;
     background: var(--white);
@@ -218,7 +219,8 @@
 
   .work-item {
     cursor: pointer;
-    width: 100%;
+    width: calc(25% - 0.75rem);
+    flex-shrink: 0;
   }
 
   .work-thumb {
