@@ -808,7 +808,21 @@
     letter-spacing: 0.08em;
     color: var(--gray);
     font-family: var(--font-sans);
+    transition: background 0.4s, color 0.4s;
   }
+
+  .contact-bar.home-mode {
+    background: transparent;
+    color: rgba(255,255,255,0.6);
+  }
+
+  .contact-bar.home-mode a,
+  .contact-bar.home-mode .contact-bar-label,
+  .contact-bar.home-mode .contact-bar-sep {
+    color: rgba(255,255,255,0.6);
+  }
+
+  .contact-bar.home-mode a:hover { color: white; }
 
   .contact-bar-label {
     color: var(--gray);
@@ -1200,6 +1214,7 @@ function applyLang() {
   const isHe = lang === 'he';
 
   document.body.classList.toggle('rtl', isHe);
+  document.body.dir = isHe ? 'rtl' : 'ltr';
   document.documentElement.lang = lang;
 
   document.getElementById('nav-subtitle').textContent = t.navSubtitle;
@@ -1274,10 +1289,16 @@ function showPage(name) {
   if (navEl) navEl.classList.add('active');
   window.scrollTo(0, 0);
 
-  // nav style
+  // nav + contact bar style
   const nav = document.querySelector('nav');
-  if (name === 'home') nav.classList.add('home-mode');
-  else nav.classList.remove('home-mode');
+  const contactBar = document.querySelector('.contact-bar');
+  if (name === 'home') {
+    nav.classList.add('home-mode');
+    contactBar.classList.add('home-mode');
+  } else {
+    nav.classList.remove('home-mode');
+    contactBar.classList.remove('home-mode');
+  }
 
   if (name === 'work') renderWorkGrid();
   if (name === 'production' && currentProdIndex >= 0) renderProduction();
@@ -1795,6 +1816,7 @@ async function generateBio() {
 
 // init
 document.querySelector('nav').classList.add('home-mode');
+document.querySelector('.contact-bar').classList.add('home-mode');
 loadData();
 </script>
 <!-- clip modal -->
