@@ -131,9 +131,11 @@
   }
 
   .hero-container {
-    position: relative;
+    position: fixed;
+    bottom: 2.5rem;
+    left: 2.5rem;
     z-index: 10;
-    text-align: center;
+    text-align: left;
   }
 
   .hero-frame {
@@ -176,18 +178,17 @@
     font-size: 0.72rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.7);
-    margin-top: 0.7rem;
+    color: rgba(255,255,255,0.8);
     opacity: 0;
     transform: translateY(4px);
     transition: opacity 0.5s 0.4s, transform 0.5s 0.4s;
-    text-align: center;
+    text-align: left;
   }
   .slide-label.visible {
     opacity: 1;
     transform: translateY(0);
   }
-  body.rtl .slide-label { text-align: center; direction: ltr; }
+  body.rtl .slide-label { text-align: left; direction: ltr; }
 
   .hero-overlay {
     position: absolute;
@@ -200,9 +201,8 @@
   .hero-dots {
     display: flex;
     gap: 8px;
-    margin-top: 1rem;
-    justify-content: center;
-    position: relative;
+    margin-top: 0.6rem;
+    justify-content: flex-start;
     z-index: 10;
   }
 
@@ -865,7 +865,7 @@
 
 <!-- ══ HOME PAGE ══ -->
 <div id="page-home" class="page active">
-  <div class="hero-frame">
+  <div class="hero-frame" onclick="showPage('work')" style="cursor:pointer;">
     <div class="hero-slides"></div>
     <div class="hero-overlay"></div>
   </div>
