@@ -38,7 +38,16 @@
     align-items: center;
     padding: 1.5rem 2.5rem;
     background: var(--white);
+    transition: background 0.4s, box-shadow 0.4s;
   }
+  nav.home-mode {
+    background: transparent;
+  }
+  nav.home-mode .nav-logo,
+  nav.home-mode .nav-links a,
+  nav.home-mode .lang-toggle { color: rgba(255,255,255,0.85); border-color: rgba(255,255,255,0.3); }
+  nav.home-mode .nav-links a:hover,
+  nav.home-mode .nav-links a.active { color: white; }
   nav.scrolled { }
 
   .nav-logo {
@@ -116,26 +125,28 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 5rem 4vw 4rem;
+    padding: 0;
+    position: relative;
+    overflow: hidden;
   }
 
   .hero-container {
-    width: 100%;
-    max-width: min(86vw, calc((100vh - 9rem) * 16 / 10 * 0.96));
+    position: relative;
+    z-index: 10;
+    text-align: center;
   }
 
   .hero-frame {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 16/10;
+    position: fixed;
+    inset: 0;
     overflow: hidden;
     background: var(--black);
+    z-index: 0;
   }
 
   .hero-slides {
     position: absolute;
     inset: 0;
-    display: flex;
   }
 
   .hero-slide {
@@ -143,16 +154,16 @@
     inset: 0;
     background-size: cover;
     background-position: center;
-    transform: translateX(0);
-    transition: transform 0.7s cubic-bezier(0.77, 0, 0.18, 1);
-    will-change: transform;
+    opacity: 0;
+    transition: opacity 1.2s ease;
+    will-change: opacity;
   }
 
-  .hero-slide.state-current  { transform: translateX(0); z-index: 2; }
-  .hero-slide.state-incoming { transform: translateX(100%); z-index: 3; }
-  .hero-slide.state-outgoing { transform: translateX(-100%); z-index: 1; }
-  .hero-slide.state-hidden   { transform: translateX(100%); z-index: 0; }
-  .hero-slide.animating      { transition: transform 0.7s cubic-bezier(0.77, 0, 0.18, 1); }
+  .hero-slide.state-current  { opacity: 1; z-index: 2; }
+  .hero-slide.state-incoming { opacity: 0; z-index: 3; }
+  .hero-slide.state-outgoing { opacity: 0; z-index: 1; }
+  .hero-slide.state-hidden   { opacity: 0; z-index: 0; }
+  .hero-slide.animating      { transition: opacity 1.2s ease; }
 
   .slide-1 { background: linear-gradient(135deg, #1a1410 0%, #2d2318 50%, #1a0e0a 100%); }
   .slide-2 { background: linear-gradient(135deg, #0d1520 0%, #162030 50%, #0a1018 100%); }
@@ -165,23 +176,23 @@
     font-size: 0.72rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--gray);
+    color: rgba(255,255,255,0.7);
     margin-top: 0.7rem;
     opacity: 0;
     transform: translateY(4px);
     transition: opacity 0.5s 0.4s, transform 0.5s 0.4s;
-    text-align: left;
+    text-align: center;
   }
   .slide-label.visible {
     opacity: 1;
     transform: translateY(0);
   }
-  body.rtl .slide-label { text-align: left; direction: ltr; }
+  body.rtl .slide-label { text-align: center; direction: ltr; }
 
   .hero-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 50%);
+    background: rgba(0,0,0,0.3);
     pointer-events: none;
     z-index: 5;
   }
@@ -190,18 +201,20 @@
     display: flex;
     gap: 8px;
     margin-top: 1rem;
-    justify-content: flex-end;
+    justify-content: center;
+    position: relative;
+    z-index: 10;
   }
 
   .hero-dot {
     width: 5px;
     height: 5px;
     border-radius: 50%;
-    background: var(--light);
+    background: rgba(255,255,255,0.3);
     cursor: pointer;
     transition: background 0.3s;
   }
-  .hero-dot.active { background: var(--black); }
+  .hero-dot.active { background: white; }
 
   /* ── WORK PAGE ── */
   #page-work { padding-top: 5rem; }
@@ -852,10 +865,12 @@
 
 <!-- ══ HOME PAGE ══ -->
 <div id="page-home" class="page active">
+  <div class="hero-frame">
+    <div class="hero-slides"></div>
+    <div class="hero-overlay"></div>
+  </div>
   <div class="hero-container">
-    <div class="hero-frame" onclick="showPage('work')" style="cursor:pointer;">
-      <div class="hero-slides"></div>
-    </div>
+    <div id="hero-label" class="slide-label"></div>
     <div class="hero-dots"></div>
   </div>
 </div>
@@ -1251,6 +1266,11 @@ function showPage(name) {
   if (navEl) navEl.classList.add('active');
   window.scrollTo(0, 0);
 
+  // nav style
+  const nav = document.querySelector('nav');
+  if (name === 'home') nav.classList.add('home-mode');
+  else nav.classList.remove('home-mode');
+
   if (name === 'work') renderWorkGrid();
   if (name === 'production' && currentProdIndex >= 0) renderProduction();
 }
@@ -1548,25 +1568,20 @@ function goToSlide(n) {
   const prev   = currentSlide;
   currentSlide = n;
 
-  // outgoing: slide out to left
+  // dissolve: fade out prev, fade in next
   slides[prev].classList.remove('state-current');
-  slides[prev].classList.add('animating', 'state-outgoing');
+  slides[prev].classList.add('state-outgoing');
 
-  // incoming: start from right, then push in
   slides[n].classList.remove('state-hidden');
   slides[n].classList.add('state-incoming');
-
-  // force reflow so the browser registers the start position
   slides[n].getBoundingClientRect();
-
-  // animate incoming to center
-  slides[n].classList.add('animating');
-  slides[n].classList.replace('state-incoming', 'state-current');
+  slides[n].classList.add('animating', 'state-current');
+  slides[n].classList.remove('state-incoming');
 
   dots[prev].classList.remove('active');
   dots[n].classList.add('active');
 
-  // update label below
+  // update label
   const labelEl = document.getElementById('hero-label');
   if (labelEl && heroProductions[n]) {
     const isHe = lang === 'he';
@@ -1579,11 +1594,11 @@ function goToSlide(n) {
   }
 
   setTimeout(() => {
-    slides[prev].classList.remove('animating', 'state-outgoing');
+    slides[prev].classList.remove('state-outgoing');
     slides[prev].classList.add('state-hidden');
     slides[n].classList.remove('animating');
     isAnimating = false;
-  }, 750);
+  }, 1300);
 }
 
 let slideTimer = setInterval(() => {
@@ -1771,6 +1786,7 @@ async function generateBio() {
 }
 
 // init
+document.querySelector('nav').classList.add('home-mode');
 loadData();
 </script>
 <!-- clip modal -->
