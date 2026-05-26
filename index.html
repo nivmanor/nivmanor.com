@@ -1564,7 +1564,8 @@ function initHero() {
 
   const slidesEl = document.querySelector('.hero-slides');
   slidesEl.innerHTML = heroProductions.map((p, i) => {
-    return `<div class="hero-slide ${i===0?'state-current':'state-hidden'}" style="background-image:url('${p.mainImage}');background-size:cover;background-position:center;"></div>`;
+    const safeUrl = p.mainImage.replace(/'/g, "\\'");
+    return `<div class="hero-slide ${i===0?'state-current':'state-hidden'}" style="background-image:url('${safeUrl}');background-size:cover;background-position:center;"></div>`;
   }).join('');
 
   // label below image
